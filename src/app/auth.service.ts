@@ -5,7 +5,6 @@ interface Response {
   success: boolean;
   message: string;
 }
-const url = 'http://localhost:5000'
 
 @Injectable({
   providedIn: 'root'
@@ -18,13 +17,13 @@ export class AuthService {
   constructor(private http: HttpClient) { }
   //Makes sure the user is logged in
   checkLogged(){
-    return this.http.get<Response>(url + '/check', {withCredentials: true});
+    return this.http.get<Response>('/check', {withCredentials: true});
   }
 
 
   getUserDetails(username, password) {
     // post these details to API server, return user info if correct
-    return this.http.post<Response>(url + '/login',{
+    return this.http.post<Response>('/login',{
       username,
       password
     },{withCredentials: true})

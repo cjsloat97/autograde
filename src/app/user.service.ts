@@ -13,7 +13,7 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   getSomeData() { //Better name
-    return this.http.get('http://localhost:5000/database',
+    return this.http.get('/database',
     {withCredentials: true})
   }
 }

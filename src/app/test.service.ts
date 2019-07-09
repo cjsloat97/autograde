@@ -11,12 +11,12 @@ export class TestService {
   constructor(private http: HttpClient) { }
 
   retrieveTest() { //Gets the test
-    return this.http.get<any>('http://localhost:5000/test',
+    return this.http.get<any>('/test',
     {withCredentials: true})
   }
 
   submitToGrade(answers, testID) {//Gets teh grade
-    return this.http.post<any>('http://localhost:5000/grader',{
+    return this.http.post<any>('/grader',{
       answers,
       testID
     },
