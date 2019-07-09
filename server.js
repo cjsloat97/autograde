@@ -8,11 +8,6 @@ const app = express();
 
 app.use(express.static('./dist/autograde'));
 
-app.get('/*', function(req,res) {
-    
-  res.sendFile(path.join(__dirname,'/dist/autograde/index.html'));
-  });
-
 const TWO_HOURS = 1000*60*60*2
 /* 
 Hi - I have no idea what webdev is
@@ -84,7 +79,7 @@ app.use(function(req, res, next) {
 
 //Root page, idk might delete later
 app.get('/', function(req, res) {
-  res.send('<h1>Yeet</h1>')
+  res.sendFile(path.join(__dirname,'/dist/autograde/index.html'));
 });
 /*
 Works to handle all login requests (both user and admin)
