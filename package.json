@@ -9,7 +9,11 @@
     "yeet": "nodemon server",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ng serve --proxy-config proxyconfig.json"
+    "postinstall": "ng build --prod"
+  },
+  "engines": {
+    "node": "8.11.3",
+    "npm": "6.1.0"
   },
   "private": true,
   "dependencies": {
