@@ -1,0 +1,32 @@
+<div>
+  <h2>Test ID : {{currTest.id}}</h2>
+  <form #testForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+    <ul class="currTest.test">
+      <li *ngFor="let bank of currTest.test">
+        {{bank.question}}<br>
+        <label>
+        <input type="radio" name={{bank.id}} value="a" [(ngModel)]="answers[bank.id]">
+          {{bank.a}}
+        </label><br/>
+        <label>
+        <input type="radio" name={{bank.id}} value="b" [(ngModel)]="answers[bank.id]">
+          {{bank.b}}
+        </label><br/>
+        <label>
+        <input type="radio" name={{bank.id}} value="c" [(ngModel)]="answers[bank.id]">
+          {{bank.c}}
+        </label><br/>
+        <label>
+        <input type="radio" name={{bank.id}} value="d" [(ngModel)]="answers[bank.id]">
+          {{bank.d}}
+        </label>
+      </li>
+    </ul>
+    <button type="submit" class="btn btn-success">Submit</button>
+  </form>
+  <div *ngIf="submitted">
+    <br>
+    You got a {{grade}}%<br>
+    <a routerLink="/user">Back</a>
+  </div>
+</div>
