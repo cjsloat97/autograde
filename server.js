@@ -3,6 +3,7 @@
 const express = require('express');
 const session = require('express-session');
 var bodyParser = require('body-parser');
+var path = require("path");
 
 const app = express();
 
@@ -12,7 +13,7 @@ const TWO_HOURS = 1000*60*60*2
 /* 
 Hi - I have no idea what webdev is
 
-This is the node JS backend - to run in dev mode run "node run yeet"
+This is the node JS backend - to run in dev mode run "npm run yeet"
   this runs the "yeet" option, found in the package.json file
   node server.js also works for production
 
@@ -62,7 +63,7 @@ app.use(session({
   cookie: {
     maxAge: SESS_LIFETIME,
     sameSite : true,
-    secure: true
+    secure: false
   }
 }))
 
@@ -79,10 +80,7 @@ app.use(function(req, res, next) {
     next();
   });
 
-//Root page, idk might delete later
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname,'/dist/autograde/index.html'));
-});
+
 /*
 Works to handle all login requests (both user and admin)
 
@@ -92,7 +90,7 @@ Check if admin -> if so, return return admin powers
     return user login success with user id
     else, return error
 */
-app.post('/login', function(req, res) {
+app.post('/api/login', function(req, res) {
   var username = req.body.username;
   var password = req.body.password;
   if (username == 'admin' && password == 'admin'){
@@ -129,7 +127,7 @@ Check to cookie for the ID
   if user, return user info
   else, return error
 */
-app.get('/database', function(req, res) {
+app.get('/api/database', function(req, res) {
   thisID = req.session.userID
   if(thisID){
     if (thisID === 999){
@@ -148,7 +146,7 @@ app.get('/database', function(req, res) {
 
 //Similar to above, except returns the test
 //This will change a lot when database and test schedule is implemented
-app.get('/test', function(req, res){
+app.get('/api/test', function(req, res){
   thisID = req.session.userID
   if(thisID){
     res.send(questions[0]);
@@ -169,7 +167,7 @@ First, the method checks to make sure the user is still logged in
     and compute grade, then send it back
   else, return error
 */
-app.post('/grader', function(req,res){
+app.post('/api/grader', function(req,res){
   thisID = req.session.userID
   if(thisID){
     const currUser = users.find(user => user.id === thisID)
@@ -207,7 +205,7 @@ This checks to make sure the user is logged in at many different points
 
 Just checks the user id from the cookie and if that exists they are good to go
 */
-app.get('/check', function(req,res){
+app.get('/api/check', function(req,res){
   thisID = req.session.userID
   if (thisID === 999){
     res.send({
@@ -225,6 +223,11 @@ app.get('/check', function(req,res){
       message : "Not logged in"
     })
   }
+});
+
+//Should serve angular files
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname,'/dist/autograde/index.html'));
 });
 
 
