@@ -23,7 +23,7 @@ TODO: I need the database to actually come up
 
 //Some variables to set up for the server start
 const {
-  PORT = 5000, //Where the server will go (?)
+  PORT =(process.env.PORT || 5000), //Where the server will go (?)
   NODE_ENV = 'development',
   SESS_NAME = 'sid', //Some cookie modifiers and attributes
   SESS_SECRET ='help',
