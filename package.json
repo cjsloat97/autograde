@@ -8,9 +8,8 @@
     "test": "ng test",
     "yeet": "nodemon server",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "postinstall": "ng build --prod"
-  },
+    "e2e": "ng e2e"
+  },  
   "private": true,
   "dependencies": {
     "@angular-devkit/build-angular": "~0.800.0",
