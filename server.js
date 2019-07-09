@@ -58,6 +58,7 @@ app.use(session({
   resave: false, //Will not save if nothing is modified
   saveUninitialized: false, //Will not save if uninitialized
   secret: SESS_SECRET,
+  proxy : true,
   cookie: {
     maxAge: SESS_LIFETIME,
     sameSite : true,
