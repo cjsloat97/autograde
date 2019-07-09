@@ -52,6 +52,7 @@ const questions =
 
 
 //Setting some cookie options
+app.enable('trust proxy');
 app.use(session({
   name: SESS_NAME,
   resave: false, //Will not save if nothing is modified
