@@ -73,7 +73,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //On any request, this is some magic to make sure you can use CORS
   //(Cross-Origin Resource Sharing)
 app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+    res.header("Access-Control-Allow-Origin", "https://autograderer.herokuapp.com");
     res.header("Access-Control-Allow-Credentials", true);
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
