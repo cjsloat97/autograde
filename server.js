@@ -2,12 +2,14 @@
 
 const express = require('express');
 const session = require('express-session');
+const mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var path = require("path");
+var path = require('path');
 
 const app = express();
-
 app.use(express.static('./dist/autograde'));
+
+const Student = require('./models/Student');
 
 const TWO_HOURS = 1000*60*60*2
 /* 
@@ -24,7 +26,17 @@ The point of this server is to act as the API for the Autograder front end
 TODO: I need the database to actually come up
 */
 
-//Some variables to set up for the server start
+//Mongo Config
+//This is in another file
+const db = require('./config/keys').mongoURI;
+
+//Connect to mongo
+mongoose.connect(db, { useNewUrlParser: true })
+  .then(() => console.log('MongoDB Connected...'))
+  .catch(err => console.log(err));
+
+
+  //Some variables to set up for the server start
 const {
   PORT =(process.env.PORT || 5000), //Where the server will go (?)
   NODE_ENV = 'development',
@@ -32,25 +44,9 @@ const {
   SESS_SECRET ='help',
   SESS_LIFETIME = TWO_HOURS
 } = process.env
+
 //For development, how to go to production
 const IN_PROD = NODE_ENV === 'production'
-
-//This is where the user database will go
-const users = [
-  { id: 1, name :'CJ Sloat', password: 'secret', grade : 0},
-  { id: 2, name : 'Andrew Leaf', password: 'secret', grade : 0}
-]
-
-//This is where the test bank will go
-const questions =
-  [{ id : 1,
-    test: [{id : 1, question: "8 + 2 = ?", a : 1, b : 10, c : 3, d : 4},
-  { id: 2, question: "4 + 1 = ?", a : 1, b : 10, c : 5, d : 4,},
-  { id: 3, question: "5 - 9 = ?", a : 1, b : 10, c : 3, d : -4,},
-  { id: 4, question: "7 + 5 = ?", a : 12, b : 10, c : 3, d : 4,}],
-  correct : ["b","c","d","a"]
-}]
-
 
 //Setting some cookie options
 app.enable('trust proxy');
@@ -65,7 +61,7 @@ app.use(session({
     sameSite : true,
     secure: false
   }
-}))
+}));
 
 //Some setup in order to be able to parse json
 app.use(bodyParser.json()); // support json encoded bodies
@@ -73,13 +69,57 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 //On any request, this is some magic to make sure you can use CORS
   //(Cross-Origin Resource Sharing)
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "https://autograderer.herokuapp.com");
+app.use(function(req, res, next) {  
+    res.header("Access-Control-Allow-Origin", "http://localhost:4200");//Might need to change to https://autograderer.herokuapp.com on launch
     res.header("Access-Control-Allow-Credentials", true);
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });
 
+//MongoDB new student registration
+app.post('/api/database', function(req,res){
+  thisID = req.session.userID
+  var name = req.body.username;
+  var pass = "secret"; //Add some hash code to 
+  if(thisID === 999){
+    const newStudent = new Student({
+      user : name,
+      password : pass
+    });
+
+    newStudent.save().then(student => res.json(student));
+  }else{
+    res.send({
+      success: false,
+      message: "not admin"
+    });
+  }
+});
+
+//MongoDB student deletion
+app.delete('/api/database/:id', function(req,res){
+  thisID = req.session.userID
+  if(thisID === 999){
+    Student.findById(req.params.id)
+      .then(student => student.remove().then(() => res.json({success: true})))
+  }else{
+    res.send({
+      success: false,
+      message: "not admin"
+    });
+  }
+});
+
+//This is where the test bank will go
+const questions =
+  [{ id : 1,
+    test: [{id : 1, question: "8 + 2 = ?", a : 1, b : 10, c : 3, d : 4},
+  { id: 2, question: "4 + 1 = ?", a : 1, b : 10, c : 5, d : 4,},
+  { id: 3, question: "5 - 9 = ?", a : 1, b : 10, c : 3, d : -4,},
+  { id: 4, question: "7 + 5 = ?", a : 12, b : 10, c : 3, d : 4,}],
+  correct : ["b","c","d","a"]
+}]
 
 /*
 Works to handle all login requests (both user and admin)
@@ -92,29 +132,30 @@ Check if admin -> if so, return return admin powers
 */
 app.post('/api/login', function(req, res) {
   var username = req.body.username;
-  var password = req.body.password;
-  if (username == 'admin' && password == 'admin'){
+  var pass = req.body.password;
+  req.session.userID = null;
+  if (username == 'admin' && pass == 'admin'){
     req.session.userID = 999 //Temp code for the admin, will need something better
     res.send({
       success: true,
       message: "admin"
     });
   } else{
-    const user = users.find(
-      user => user.name === username && user.password === password
-    )
-    if (user){
-      req.session.userID = user.id
-      res.send({
-        success: true,
-        message: "user"
-      });
-    }else{
-      res.send({
-        success: false,
-        message: "Invalid credentials"
-      }); 
-    }
+    Student.findOne({user : username, password : pass})
+      .then(function(student){
+        if (student){
+          req.session.userID = student._id;
+          res.send({
+            success: true,
+            message: "User"
+          });
+        }else{
+          res.send({
+            success: false,
+            message: "Invalid credentials"
+          }); 
+        }
+    });
   }
 });
 
@@ -131,10 +172,14 @@ app.get('/api/database', function(req, res) {
   thisID = req.session.userID
   if(thisID){
     if (thisID === 999){
-      res.send(users)
+      Student.find()
+      .sort( {user : 1})
+      .then(students => res.json(students));
     }else{
-      const currUser = users.find(user => user.id === thisID)
-      res.send(currUser);
+      Student.findById(thisID)
+        .then(function(student){
+          res.send(student);
+      });
     }
   }else{
     res.send({
@@ -170,25 +215,28 @@ First, the method checks to make sure the user is still logged in
 app.post('/api/grader', function(req,res){
   thisID = req.session.userID
   if(thisID){
-    const currUser = users.find(user => user.id === thisID)
-    var answers = req.body.answers;
-    var testID = req.body.testID;
-    const test = questions.find(
-      test => test.id === testID
-    )
-    const answerKey = test.correct
-    var count = 0
-    for (i = 0; i < answers.length; i++) { 
-      if (answers[i] == answerKey[i]){
-        count++;
-      }
-    }
-    count = (count/4) * 100
-    currUser.grade = count
-    res.send({
-      success : true,
-      grade : count
-    })
+    Student.findById(thisID)
+      .then(function(student){
+        var answers = req.body.answers;
+        var testID = req.body.testID;
+        const test = questions.find(
+          test => test.id === testID
+        )
+        const answerKey = test.correct
+        var count = 0
+        for (i = 0; i < answers.length; i++) { 
+          if (answers[i] == answerKey[i]){
+            count++;
+          }
+        }
+        count = (count/4) * 100
+        student.grade = count
+        student.save();
+        res.send({
+          success : true,
+          grade : count
+        })
+    });   
   } else{
     res.send({
       sucess : false,

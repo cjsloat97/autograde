@@ -21,13 +21,30 @@ export class AdminComponent implements OnInit {
         this.router.navigate(['login'])
       } else {
         if(data.message == "admin"){
-          this.user.getSomeData().subscribe(data =>{
-            this.students = data
-          })
+          this.updateList();
         }else{
           this.router.navigate(['login'])
         }
       }
+    })
+  }
+
+
+  registerUser(event) {
+    const target = event.target
+    const username = target.querySelector('#username').value
+    this.user.register(username).subscribe(() =>
+      this.updateList());
+  }
+
+  removeStudent(userID){
+    this.user.delete(userID).subscribe(() =>
+      this.updateList());
+  }
+
+  updateList(){
+    this.user.getSomeData().subscribe(data =>{
+      this.students = data
     })
   }
   

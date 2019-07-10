@@ -27,7 +27,7 @@ import { TestComponent } from './test/test.component'
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    FormsModule,
+    FormsModule,  
     RouterModule.forRoot([
       {
         path: '',

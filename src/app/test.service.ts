@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+const url = ''
+//const url = 'http://localhost:5000'
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,12 +14,12 @@ export class TestService {
   constructor(private http: HttpClient) { }
 
   retrieveTest() { //Gets the test
-    return this.http.get<any>('/api/test',
+    return this.http.get<any>(url + '/api/test',
     {withCredentials: true})
   }
 
   submitToGrade(answers, testID) {//Gets teh grade
-    return this.http.post<any>('/api/grader',{
+    return this.http.post<any>(url + '/api/grader',{
       answers,
       testID
     },
