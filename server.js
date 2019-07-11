@@ -10,6 +10,7 @@ const app = express();
 app.use(express.static('./dist/autograde'));
 
 const Student = require('./models/Student');
+const Quizes = require('./models/Quiz');
 
 const TWO_HOURS = 1000*60*60*2
 /* 
@@ -191,10 +192,26 @@ app.get('/api/database', function(req, res) {
 
 //Similar to above, except returns the test
 //This will change a lot when database and test schedule is implemented
+/*
 app.get('/api/test', function(req, res){
-  thisID = req.session.userID
+  var testID = req.body.testID;
+  var thisID = req.session.userID
   if(thisID){
-    res.send(questions[0]);
+    Quizes.findOne({name : testID})
+    .then(function(quiz){
+      if (quiz){
+        req.session.userID = student._id;
+        res.send({
+          success: true,
+          message: "User"
+        });
+      }else{
+        res.send({
+          success: false,
+          message: "idk you fucked up somewhere"
+        }); 
+      }
+    });
   }else{
     res.send({
       success: false,
@@ -202,7 +219,7 @@ app.get('/api/test', function(req, res){
     });
   }
 });
-
+*/
 /*
 This is the grader, it recieves the students answers, checks the database,
   and returns the correct grade (ideally)
@@ -219,23 +236,25 @@ app.post('/api/grader', function(req,res){
       .then(function(student){
         var answers = req.body.answers;
         var testID = req.body.testID;
-        const test = questions.find(
-          test => test.id === testID
-        )
-        const answerKey = test.correct
-        var count = 0
-        for (i = 0; i < answers.length; i++) { 
-          if (answers[i] == answerKey[i]){
-            count++;
+
+        Quizes.findOne({name : testID})
+        .then(function(quiz){
+          const answerKey = quiz.answers
+          var count = 0
+          for (i = 0; i < answers.length; i++) { 
+            if (answers[i] == answerKey[i]){
+              count++;
+            }
           }
-        }
-        count = (count/4) * 100
-        student.grade = count
-        student.save();
-        res.send({
-          success : true,
-          grade : count
-        })
+          count = (count/4) * 100
+          student.grade = count
+          student.save();
+          res.send({
+            success : true,
+            grade : count
+          })
+        });
+        
     });   
   } else{
     res.send({
@@ -261,10 +280,10 @@ app.get('/api/check', function(req,res){
       message: "admin"
     })
   } else if (thisID){
-    res.send({
-      success: true,
-      message: thisID
-    })
+      Student.findById(thisID)
+      .then(function(student){
+        res.send({success: true, message : "Logged In", quiz : student.quiz});
+      });
   } else{
     res.send({
       success: false,

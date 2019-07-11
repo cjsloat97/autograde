@@ -1,5 +1,10 @@
 <div>
-  <h2>Test ID : {{currTest.id}}</h2>
+  <div *ngIf="submitted">
+    <br>
+    You got a {{grade}}%<br>
+    <a routerLink="/user">Back</a>
+  </div>
+<!--
   <form #testForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
     <ul class="currTest.test">
       <li *ngFor="let bank of currTest.test">
@@ -24,9 +29,21 @@
     </ul>
     <button type="submit" class="btn btn-success">Submit</button>
   </form>
-  <div *ngIf="submitted">
+-->
+  <img src="../../assets/QQ/{{quiz}}.PNG">
+  <br>
+  <form (submit)="onSubmit($event)">
+    Question 1
+    <input type="text" placeholder="Answer" id="q1">
+    Question 2
+    <input type="text" placeholder="Answer" id="q2">
     <br>
-    You got a {{grade}}%<br>
-    <a routerLink="/user">Back</a>
-  </div>
+    Question 3
+    <input type="text" placeholder="Answer" id="q3">
+    Question 4
+    <input type="text" placeholder="Answer" id="q4">
+    <button type="submit" class="btn btn-success">Submit</button>
+  </form>
+
+
 </div>

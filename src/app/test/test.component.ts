@@ -13,7 +13,8 @@ import { TestService } from '../test.service';
 export class TestComponent implements OnInit {
   
   //Placeholders
-  answers:any ={};
+  quiz = ""
+
   submitted = false
   grade = 0;
 
@@ -31,9 +32,12 @@ export class TestComponent implements OnInit {
         this.router.navigate(['login'])
       } else {
         if(data.message != "admin"){
+          this.quiz = data.quiz;
+          /*
           this.test.retrieveTest().subscribe(data =>{
             this.currTest = data;
           })
+          */
         }else{
           this.router.navigate(['login'])
         }
@@ -41,13 +45,11 @@ export class TestComponent implements OnInit {
     })
   }
 
-  onSubmit(){ //Need some data formatting before submitting
-    var submitData = [];
-    var i;
-    for (i = 1; i < 5; i++) { 
-      submitData.push(this.answers[i])
-    }
-    this.test.submitToGrade(submitData,this.currTest.id).subscribe(data =>
+  onSubmit(event){ //Need some data formatting before submitting
+    event.preventDefault()
+    const target = event.target
+    var answers = [target.querySelector('#q1').value,target.querySelector('#q2').value,target.querySelector('#q3').value,target.querySelector('#q4').value]
+    this.test.submitToGrade(answers,this.quiz).subscribe(data =>
       this.grade = data.grade)
 
     this.submitted = true;

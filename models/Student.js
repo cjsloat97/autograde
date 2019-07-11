@@ -14,6 +14,10 @@ const StudentSchema = new Schema({
     grade: {
         type: Number,
         default : 0
+    },
+    quiz : {
+        type: String,
+        default : "00"
     }
 });
 
