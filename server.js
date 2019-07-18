@@ -98,6 +98,37 @@ app.post('/api/database', function(req,res){
   }
 });
 
+//MongoDB advance test day
+app.post('/api/advance', function(req,res){
+  thisID = req.session.userID
+  if(thisID === 999){
+    Quizes.findOne({name : "order"})
+      .then(function(result) {
+        Student.find()
+        .then(function(students){
+          for (i = 0; i < students.length; i++ ){
+            console.log(students[i]);
+          }
+          console.log(result)
+          console.log(result.order)
+        });  
+      }
+      
+    );
+
+
+    res.send({
+      success: true,
+      message: "Day Advacned"
+    });
+  }else{
+    res.send({
+      success: false,
+      message: "Failed - Day Not Advanced - Not Logged In"
+    });
+  }
+});
+
 //MongoDB student deletion
 app.delete('/api/database/:id', function(req,res){
   thisID = req.session.userID
@@ -113,6 +144,7 @@ app.delete('/api/database/:id', function(req,res){
 });
 
 //This is where the test bank will go
+/*
 const questions =
   [{ id : 1,
     test: [{id : 1, question: "8 + 2 = ?", a : 1, b : 10, c : 3, d : 4},
@@ -121,6 +153,7 @@ const questions =
   { id: 4, question: "7 + 5 = ?", a : 12, b : 10, c : 3, d : 4,}],
   correct : ["b","c","d","a"]
 }]
+*/
 
 /*
 Works to handle all login requests (both user and admin)
@@ -135,7 +168,7 @@ app.post('/api/login', function(req, res) {
   var username = req.body.username;
   var pass = req.body.password;
   req.session.userID = null;
-  if (username == 'admin' && pass == 'a6dmin'){
+  if (username == 'admin' && pass == 'admin'){
     req.session.userID = 999 //Temp code for the admin, will need something better
     res.send({
       success: true,
@@ -220,6 +253,7 @@ app.get('/api/test', function(req, res){
   }
 });
 */
+
 /*
 This is the grader, it recieves the students answers, checks the database,
   and returns the correct grade (ideally)
@@ -262,7 +296,6 @@ app.post('/api/grader', function(req,res){
       message : "Idk you fucked up"
     })
   }
-
 });
 
 /*

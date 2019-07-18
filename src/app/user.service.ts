@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 
 
-const url = ''
-//const url = 'http://localhost:5000'
+//const url = ''
+const url = 'http://localhost:5000'
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,12 @@ export class UserService {
 
   delete(userID) {
     return this.http.delete(url + '/api/database/' + userID,
+    {withCredentials: true})
+  }
+
+  advance() {
+    return this.http.post<any>(url + '/api/advance/',
+    {},
     {withCredentials: true})
   }
 }

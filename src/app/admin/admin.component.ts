@@ -47,5 +47,12 @@ export class AdminComponent implements OnInit {
       this.students = data
     })
   }
+
+  advanceDay(){
+    this.user.advance().subscribe(data =>{
+      window.alert(data.message)
+    })
+
+  }
   
 }
