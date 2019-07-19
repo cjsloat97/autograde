@@ -20,6 +20,11 @@ export class UserService {
     {withCredentials: true})
   }
 
+  getUserData(userID) {
+    return this.http.get(url + '/api/database/' + userID,
+    {withCredentials: true})
+  }
+
   register(username) {
     return this.http.post(url + '/api/database',{
       username
@@ -33,7 +38,7 @@ export class UserService {
   }
 
   advance() {
-    return this.http.post<any>(url + '/api/advance/',
+    return this.http.post<any>(url + '/api/advance',
     {},
     {withCredentials: true})
   }

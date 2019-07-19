@@ -104,18 +104,22 @@ app.post('/api/advance', function(req,res){
   if(thisID === 999){
     Quizes.findOne({name : "order"})
       .then(function(result) {
+        quizOrder = result.order
         Student.find()
         .then(function(students){
           for (i = 0; i < students.length; i++ ){
-            console.log(students[i]);
+            currentQuiz = students[i].quiz
+            index = quizOrder.indexOf(currentQuiz) + 1
+            if (index >= quizOrder.length){
+              index = 0
+            }
+            students[i].quiz = quizOrder[index]
+            students[i].save()
           }
-          console.log(result)
-          console.log(result.order)
         });  
       }
       
     );
-
 
     res.send({
       success: true,
@@ -135,6 +139,19 @@ app.delete('/api/database/:id', function(req,res){
   if(thisID === 999){
     Student.findById(req.params.id)
       .then(student => student.remove().then(() => res.json({success: true})))
+  }else{
+    res.send({
+      success: false,
+      message: "not admin"
+    });
+  }
+});
+
+app.get('/api/database/:id', function(req,res){
+  thisID = req.session.userID
+  if(thisID === 999){
+    Student.findById(req.params.id)
+      .then(student => res.send(student));
   }else{
     res.send({
       success: false,
@@ -212,6 +229,7 @@ app.get('/api/database', function(req, res) {
     }else{
       Student.findById(thisID)
         .then(function(student){
+          console.log(student.grade)
           res.send(student);
       });
     }
@@ -280,8 +298,11 @@ app.post('/api/grader', function(req,res){
               count++;
             }
           }
+          testCat = parseInt(testID[0])
+          testNum = parseInt(testID[1])
           count = (count/4) * 100
-          student.grade = count
+          student.grade[testCat][testNum] = count
+          student.markModified('grade');
           student.save();
           res.send({
             success : true,

@@ -51,6 +51,7 @@ export class AdminComponent implements OnInit {
   advanceDay(){
     this.user.advance().subscribe(data =>{
       window.alert(data.message)
+      this.updateList();  
     })
 
   }

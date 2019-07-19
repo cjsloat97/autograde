@@ -12,7 +12,8 @@ import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth.service'
 import { UserService } from './user.service';
 import { UserComponent } from './user/user.component';
-import { TestComponent } from './test/test.component'
+import { TestComponent } from './test/test.component';
+import { GradeComponent } from './grade/grade.component'
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { TestComponent } from './test/test.component'
     AdminComponent,
     HomeComponent,
     UserComponent,
-    TestComponent
+    TestComponent,
+    GradeComponent
   ],
   imports: [
     BrowserModule,
@@ -46,6 +48,12 @@ import { TestComponent } from './test/test.component'
       },{
         path: 'test',
         component : TestComponent
+      },{
+        path: 'grade',
+        component : GradeComponent
+      },{
+        path : 'grade/:id',
+        component : GradeComponent
       }
     ])
   ],

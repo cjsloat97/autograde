@@ -1,0 +1,17 @@
+<div>
+  Grades: {{student.user}}
+  <br>
+  <ul class="student.grade">
+    <li *ngFor="let section of student.grade">
+      {{section}}<br>
+  </ul>
+  <br>
+  <div *ngIf="admin">
+      <br>
+      <a routerLink="/admin">Back</a>
+  </div>
+  <div *ngIf="reg">
+      <br>
+      <a routerLink="/user">Back</a>
+  </div>
+</div>

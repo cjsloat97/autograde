@@ -10,6 +10,12 @@ const Quizchema = new Schema({
     answers: {
         type: Array,
         required: true
+    },
+    day: {
+        type: Number
+    },
+    order:{
+        type : Array
     }
 });
 
