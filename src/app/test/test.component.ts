@@ -13,7 +13,7 @@ import { TestService } from '../test.service';
 export class TestComponent implements OnInit {
   
   //Placeholders
-  quiz = ""
+  quiz = "00"
 
   submitted = false
   grade = 0;

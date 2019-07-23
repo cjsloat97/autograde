@@ -21,7 +21,7 @@ export class UserService {
   }
 
   getUserData(userID) {
-    return this.http.get(url + '/api/database/' + userID,
+    return this.http.get<any>(url + '/api/database/' + userID,
     {withCredentials: true})
   }
 

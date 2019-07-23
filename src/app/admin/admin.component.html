@@ -1,8 +1,28 @@
 <div>
   <h2>My Students</h2>
   <br>
-  <button class="btn btn-danger" (click)="advanceDay()">Advance Day</button>
+  <button class="btn btn-success" (click)="advanceDay()">Advance Day</button>
   <br>
+  <br>
+
+  <table mdbTable class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th *ngFor="let head of headElements" scope="col">{{head}} </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr mdbTableCol *ngFor="let student of students">
+          <!--<th scope="row">Yes</th>-->
+          <td>{{student.user}}</td>
+          <td>{{student._id}}</td>
+          <td>{{student.quiz}}</td>
+          <td><a routerLink="/grade/{{student._id}}">Grades</a></td>
+          <td><button class="btn btn-danger" (click)="removeStudent(student._id)">Delete</button></td> 
+        </tr>
+      </tbody>
+    </table>
+  <!--
   <ul class="students">
     <li *ngFor="let student of students">
       {{student.user}} | ID: {{student._id}} | Quiz: {{student.quiz}} | <a routerLink="/grade/{{student._id}}">Grades</a>
@@ -10,10 +30,11 @@
     </li>
   </ul>
   <br>
+  -->
   <form (submit)="registerUser($event)">
     <input type="text" placeholder="Student Name" id="username">
-    <input type="submit" value="Submit">
+    <input type="submit" value="Register Student">
   </form>
   <br>
-  <a routerLink="/">Logout</a>
+  <a routerLink="/"><button class="btn btn-danger">Logout</button></a>
 </div>

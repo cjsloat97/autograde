@@ -12,6 +12,7 @@ import { UserService } from '../user.service';
 
 export class AdminComponent implements OnInit {
   students : any = [{ id: 0, name :"Placeholder", grade : 0}];
+  headElements = ['Name','ID','Quiz','',''];
 
   constructor(private auth : AuthService, private router : Router, private user: UserService) { }
 

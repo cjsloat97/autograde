@@ -229,7 +229,6 @@ app.get('/api/database', function(req, res) {
     }else{
       Student.findById(thisID)
         .then(function(student){
-          console.log(student.grade)
           res.send(student);
       });
     }

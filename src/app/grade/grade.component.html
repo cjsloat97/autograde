@@ -1,17 +1,43 @@
 <div>
-  Grades: {{student.user}}
+  <h2>Grades: {{student.user}}</h2>
   <br>
-  <ul class="student.grade">
-    <li *ngFor="let section of student.grade">
-      {{section}}<br>
-  </ul>
+  <table mdbTable class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th *ngFor="let head of headElements" scope="col">{{head}} </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr mdbTableCol *ngFor="let el of student.grade; let i = index">
+        <th scope="row">{{topics[i]}}</th>
+        <td>{{el[0]}}</td>
+        <td>{{el[1]}}</td>
+        <td>{{el[2]}}</td>
+        <td>{{el[3]}}</td>
+        <td>{{el[4]}}</td>
+        <td>{{el[5]}}</td>
+        <td>{{el[6]}}</td>
+        <td>{{el[7]}}</td>
+        <td>{{el[8]}}</td>
+        <td>{{el[9]}}</td>
+        <td>{{el[10]}}</td>
+        <td>{{el[11]}}</td>
+        <td>{{el[12]}}</td>
+        <td>{{el[13]}}</td>
+        <td>{{el[14]}}</td>
+
+      </tr>
+    </tbody>
+  </table>
+
   <br>
   <div *ngIf="admin">
-      <br>
-      <a routerLink="/admin">Back</a>
+    <br>
+    <a routerLink="/admin"><button type="button" class="btn btn-primary">Back</button></a>
   </div>
   <div *ngIf="reg">
       <br>
-      <a routerLink="/user">Back</a>
+      <a routerLink="/user"><button type="button" class="btn btn-primary">Back</button></a>
   </div>
+
 </div>
