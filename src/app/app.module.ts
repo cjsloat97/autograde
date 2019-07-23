@@ -15,6 +15,8 @@ import { UserComponent } from './user/user.component';
 import { TestComponent } from './test/test.component';
 import { GradeComponent } from './grade/grade.component'
 
+import { ChartsModule } from 'ng2-charts';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,6 +29,7 @@ import { GradeComponent } from './grade/grade.component'
   ],
   imports: [
     BrowserModule,
+    ChartsModule,
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
