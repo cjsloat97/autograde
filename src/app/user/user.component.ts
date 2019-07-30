@@ -20,7 +20,7 @@ export class UserComponent implements OnInit {
         this.router.navigate(['login'])
       } else {
         if(data.message != "admin"){
-          this.user.getSomeData().subscribe(data =>{
+          this.user.getUser().subscribe(data =>{
             this.student = data;
           })
         }else{

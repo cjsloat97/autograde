@@ -1,9 +1,4 @@
 <div>
-  <div *ngIf="submitted">
-    <br>
-    <h3>You got a {{grade}}%</h3>
-    <br>
-  </div>
 <!--
   <form #testForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
     <ul class="currTest.test">
@@ -44,6 +39,12 @@
     <input type="text" placeholder="Answer" id="q4">
     <button type="submit" class="btn btn-success">Submit</button>
   </form>
+
+  <div *ngIf="submitted">
+    <br>
+    <h3>You got a {{grade}}%</h3>
+    <br>
+  </div>
   <br>
   <a routerLink="/user"><button type="button" class="btn btn-primary">Back</button></a>
 

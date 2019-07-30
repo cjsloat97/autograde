@@ -82,14 +82,23 @@ app.use(function(req, res, next) {
 app.post('/api/database', function(req,res){
   thisID = req.session.userID
   var name = req.body.username;
+  var ID = req.body.period; 
   var pass = "secret"; //Add some hash code to 
   if(thisID === 999){
-    const newStudent = new Student({
-      user : name,
-      password : pass
-    });
-
-    newStudent.save().then(student => res.json(student));
+    if(name == "blank"){
+      Quizes.findOne({name : "period"})
+        .then(function(result) {
+          result.answers.push(ID);
+          result.save();
+      })
+    }else{ 
+      const newStudent = new Student({
+        user : name,
+        period : ID,
+        password : pass
+      });
+      newStudent.save().then(student => res.json(student));
+    }
   }else{
     res.send({
       success: false,
@@ -147,6 +156,7 @@ app.delete('/api/database/:id', function(req,res){
   }
 });
 
+//Get specific student info by id
 app.get('/api/database/:id', function(req,res){
   thisID = req.session.userID
   if(thisID === 999){
@@ -223,9 +233,18 @@ app.get('/api/database', function(req, res) {
   thisID = req.session.userID
   if(thisID){
     if (thisID === 999){
-      Student.find()
-      .sort( {user : 1})
-      .then(students => res.json(students));
+      Quizes.findOne({name : "period"})
+      .then(function(period) {    
+        Student.find()
+          .sort( {user : 1})
+          .then(students => res.json(
+            {
+              students,
+              period
+            }
+          ))
+        })
+
     }else{
       Student.findById(thisID)
         .then(function(student){
@@ -287,18 +306,19 @@ app.post('/api/grader', function(req,res){
       .then(function(student){
         var answers = req.body.answers;
         var testID = req.body.testID;
-
         Quizes.findOne({name : testID})
         .then(function(quiz){
           const answerKey = quiz.answers
+          testCat = parseInt(testID[0]) //Which topic
+          testNum = parseInt(testID[1]) //WHich number
+          
           var count = 0
           for (i = 0; i < answers.length; i++) { 
             if (answers[i] == answerKey[i]){
               count++;
             }
           }
-          testCat = parseInt(testID[0])
-          testNum = parseInt(testID[1])
+
           count = (count/4) * 100
           student.grade[testCat][testNum] = count
           student.markModified('grade');

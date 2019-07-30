@@ -25,10 +25,10 @@
         <td>{{el[12]}}</td>
         <td>{{el[13]}}</td>
         <td>{{el[14]}}</td>
-
       </tr>
     </tbody>
   </table>
+  
   <br>
   <div class="flex">
       <div class="flex-item">
@@ -41,11 +41,13 @@
                     [legend]="lineChartLegend"
                     [chartType]="lineChartType"
                     [plugins]="lineChartPlugins"
-                    (chartHover)="chartHovered($event)"
-                    (chartClick)="chartClicked($event)"></canvas>
+                    ></canvas>
+                    <!--(chartHover)="chartHovered($event)"
+                    (chartClick)="chartClicked($event)"-->
         </div>
       </div>
   <br>
+
   <div *ngIf="admin">
     <br>
     <a routerLink="/admin"><button type="button" class="btn btn-primary">Back</button></a>

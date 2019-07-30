@@ -11,23 +11,28 @@ const StudentSchema = new Schema({
         type: String,
         required: true
     },
+    period : {
+        type: String,
+        required : true
+    },
     grade: {
         type: Array,
-        default : [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+        default : [[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]]
     },
     quiz : {
         type: String,

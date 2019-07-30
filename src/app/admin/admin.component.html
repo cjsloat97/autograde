@@ -1,7 +1,11 @@
 <div>
-  <h2>My Students</h2>
+  <h2>My Students - Period {{periodID}}</h2>
   <br>
   <button class="btn btn-success" (click)="advanceDay()">Advance Day</button>
+  <br>
+  <br>
+  <button class="btn btn-info" (click)="lastPeriod()">Perious Period</button>
+  <button class="btn btn-info" (click)="nextPeriod()">Next Period</button>
   <br>
   <br>
 
@@ -13,12 +17,13 @@
       </thead>
       <tbody>
         <tr mdbTableCol *ngFor="let student of students">
-          <!--<th scope="row">Yes</th>-->
-          <td>{{student.user}}</td>
-          <td>{{student._id}}</td>
-          <td>{{student.quiz}}</td>
-          <td><a routerLink="/grade/{{student._id}}">Grades</a></td>
-          <td><button class="btn btn-danger" (click)="removeStudent(student._id)">Delete</button></td> 
+          <td *ngIf="student.period == periodID">{{student.user}}</td>
+          <td *ngIf="student.period == periodID">{{student._id}}</td>
+          <td *ngIf="student.period == periodID">{{student.quiz}}</td>
+          <td *ngIf="student.period == periodID"><a routerLink="/grade/{{student._id}}">Grades</a></td>
+          <td *ngIf="student.period == periodID"><button class="btn btn-danger" (click)="removeStudent(student._id)">Delete</button></td> 
+          <!--<th scope="row">Yes</th>
+          Need the ngIf for each line unfortunately-->
         </tr>
       </tbody>
     </table>
@@ -31,10 +36,25 @@
   </ul>
   <br>
   -->
-  <form (submit)="registerUser($event)">
-    <input type="text" placeholder="Student Name" id="username">
-    <input type="submit" value="Register Student">
+  <form class= "form-inline" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="Student Name">Student Name</label>
+        <input type="text" formControlName="name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Period">Period</label>
+        <select class="form-control" formControlName="period">
+          <option *ngFor="let id of period">{{id}}</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-warning">Regiter Student</button>
   </form>
+
+  <br>
+  <form (submit)="registerUser($event)">
+    <input type="text" placeholder="Period" id="period">
+    <button type="submit" class="btn btn-warning">New Period</button>
+    </form>
   <br>
   <a routerLink="/"><button class="btn btn-danger">Logout</button></a>
 </div>
