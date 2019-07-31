@@ -147,7 +147,7 @@ app.delete('/api/database/:id', function(req,res){
   thisID = req.session.userID
   if(thisID === 999){
     Student.findById(req.params.id)
-      .then(student => {student.remove().then(() => res.json({success: true})))
+      .then(student => {student.remove().then(() => res.json({success: true}))})
   }else{
     res.send({
       success: false,
