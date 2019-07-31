@@ -147,7 +147,7 @@ app.delete('/api/database/:id', function(req,res){
   thisID = req.session.userID
   if(thisID === 999){
     Student.findById(req.params.id)
-      .then(student => student.remove().then(() => res.json({success: true})))
+      .then(student => {student.remove().then(() => res.json({success: true})))
   }else{
     res.send({
       success: false,
@@ -311,22 +311,37 @@ app.post('/api/grader', function(req,res){
           const answerKey = quiz.answers
           testCat = parseInt(testID[0]) //Which topic
           testNum = parseInt(testID[1]) //WHich number
-          
           var count = 0
           for (i = 0; i < answers.length; i++) { 
             if (answers[i] == answerKey[i]){
               count++;
             }
           }
-
           count = (count/4) * 100
-          student.grade[testCat][testNum] = count
-          student.markModified('grade');
-          student.save();
-          res.send({
-            success : true,
-            grade : count
-          })
+          if(student.grade[testCat][testNum] != null && student.correct[testCat][testNum] != 100){
+            student.correct[testCat][testNum] = count
+            student.markModified('correct');
+            student.save();
+            res.send({
+              success : true,
+              grade : count,
+              corrected: true
+            })
+          }else if(student.grade[testCat][testNum] == null){
+            student.grade[testCat][testNum] = count
+            student.markModified('grade');
+            student.save();
+            res.send({
+              success : true,
+              grade : count,
+              corrected: false
+            })
+          }else{
+            res.send({
+              grade : true
+            })
+          }
+ 
         });
         
     });   

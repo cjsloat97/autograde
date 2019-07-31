@@ -15,7 +15,7 @@ export class AdminComponent implements OnInit {
   registerForm: FormGroup;
   students : any = [{ id: 0, name :"Placeholder", grade : 0}];
   headElements = ['Name','ID','Quiz','',''];
-  period : any;
+  periodList : any;
   periodID : any;
 
   constructor(private auth : AuthService,
@@ -34,9 +34,9 @@ export class AdminComponent implements OnInit {
       } else {
         if(data.message == "admin"){
           this.user.getUser().subscribe(data =>{
-            this.period = data.period.answers
+            this.periodList = data.period.answers
             this.students = data.students
-            this.periodID = this.period[0]
+            this.periodID = this.periodList[0]
           })
         }else{
           this.router.navigate(['login'])
@@ -49,7 +49,10 @@ export class AdminComponent implements OnInit {
 
   onSubmit(){
     const name = this.f.name.value
-    const period = this.f.period.value
+    var period = this.f.period.value
+    if(!period){
+      period = this.periodList[0]
+    }
     console.log(period)
     this.user.register(name,period).subscribe(() =>
      this.updateList());
@@ -75,21 +78,21 @@ export class AdminComponent implements OnInit {
   }
 
   lastPeriod(){
-    var index = this.period.indexOf(this.periodID)
+    var index = this.periodList.indexOf(this.periodID)
     index -= 1
     if (index == -1){
-      index = this.period.length - 1
+      index = this.periodList.length - 1
     }
-    this.periodID = this.period[index]
+    this.periodID = this.periodList[index]
   }
 
   nextPeriod(){
-    var index = this.period.indexOf(this.periodID)
+    var index = this.periodList.indexOf(this.periodID)
     index += 1
-    if (index == this.period.length){
+    if (index == this.periodList.length){
       index = 0
     }
-    this.periodID = this.period[index]
+    this.periodID = this.periodList[index]
   }
 
   advanceDay(){

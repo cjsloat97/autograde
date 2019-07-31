@@ -1,6 +1,8 @@
 <div>
   <h2>Grades: {{student.user}}</h2>
   <br>
+  <button class="btn btn-info" (click)="first()">First Attempt</button>
+  <button class="btn btn-info" (click)="correct()">Corrections</button>
   <table mdbTable class="table">
     <thead class="thead-dark">
       <tr>
@@ -8,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr mdbTableCol *ngFor="let el of student.grade; let i = index">
+      <tr mdbTableCol *ngFor="let el of grades; let i = index">
         <th scope="row">{{topics[i]}}</th>
         <td>{{el[0]}}</td>
         <td>{{el[1]}}</td>

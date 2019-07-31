@@ -43,7 +43,9 @@
   <div *ngIf="submitted">
     <br>
     <h3>You got a {{grade}}%</h3>
-    <br>
+    <h3 *ngIf="corrected">
+      This is your Corrected Grade
+    </h3>
   </div>
   <br>
   <a routerLink="/user"><button type="button" class="btn btn-primary">Back</button></a>

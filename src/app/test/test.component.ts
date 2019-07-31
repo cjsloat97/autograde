@@ -14,6 +14,7 @@ export class TestComponent implements OnInit {
   
   //Placeholders
   quiz = "00"
+  corrected = false
 
   submitted = false
   grade = 0;
@@ -49,8 +50,14 @@ export class TestComponent implements OnInit {
     event.preventDefault()
     const target = event.target
     var answers = [target.querySelector('#q1').value,target.querySelector('#q2').value,target.querySelector('#q3').value,target.querySelector('#q4').value]
-    this.test.submitToGrade(answers,this.quiz).subscribe(data =>
-      this.grade = data.grade)
+    this.test.submitToGrade(answers,this.quiz).subscribe(data =>{
+      if(data.grade == true){
+        this.grade = 100
+      }else{
+        this.grade = data.grade
+        this.corrected = data.corrected
+      }
+    })
 
     this.submitted = true;
   }

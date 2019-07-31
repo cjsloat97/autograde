@@ -3,7 +3,7 @@ import { AuthService } from '../auth.service';
 import { ActivatedRoute } from "@angular/router";
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
-import { ChartDataSets, ChartOptions } from 'chart.js';
+import { ChartDataSets, ChartOptions ,LinearTickOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 
 @Component({
@@ -14,6 +14,7 @@ import { Color, BaseChartDirective, Label } from 'ng2-charts';
 export class GradeComponent implements OnInit {
 
   student : any = {grade : [[10,20,30],[10,30,40],[12]]};
+  grades : any = this.student.grade
 
   topics = ['Fraction Operations','Fraction-Decimal-Percent',
     'Rounding','Add Integers','Subtract Integers','Multiply Integers',
@@ -24,10 +25,14 @@ export class GradeComponent implements OnInit {
     'QQ8','QQ9','QQ10','QQ11','QQ12','QQ13','QQ14','QQ15'];
 
   public lineChartData: ChartDataSets[] = [
-    { data: this.student.grade[0], label: this.topics[0], fill : false },
-    { data: this.student.grade[1], label: this.topics[1], fill : false },
-    { data: this.student.grade[2], label: this.topics[2], fill : false }
+    { data: this.grades[0],lineTension: 0, label: this.topics[0], fill : false }
   ];
+
+  xAxisTickOptions: LinearTickOptions = {
+    min: 0,
+    stepSize: 25,
+    max : 100
+  };
 
   public lineChartLabels: Label[] = ['QQ1', 'QQ2', 'QQ3','QQ4','QQ5','QQ6','QQ7',
     'QQ8','QQ9','QQ10','QQ11','QQ12','QQ13','QQ14','QQ15'];
@@ -38,7 +43,9 @@ export class GradeComponent implements OnInit {
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
       xAxes: [{}],
-      yAxes: [{}]
+      yAxes: [{
+        ticks: this.xAxisTickOptions
+        }]
     },
     annotation: {
       annotations: [{},],
@@ -75,8 +82,6 @@ export class GradeComponent implements OnInit {
   public lineChartType = 'line';
 
   @ViewChild(BaseChartDirective, { static: true }) public chart: BaseChartDirective;
-
-
   
 
   admin = false;
@@ -87,23 +92,33 @@ export class GradeComponent implements OnInit {
 
   updateGraph(){
     this.lineChartData = [
-      { data: this.student.grade[0],lineTension: 0, label: this.topics[0], fill : false },
-      { data: this.student.grade[1],lineTension: 0, label: this.topics[1], fill : false },
-      { data: this.student.grade[2],lineTension: 0, label: this.topics[2], fill : false },
-      { data: this.student.grade[3],lineTension: 0, label: this.topics[3], fill : false },
-      { data: this.student.grade[4],lineTension: 0, label: this.topics[4], fill : false },
-      { data: this.student.grade[5],lineTension: 0, label: this.topics[5], fill : false },
-      { data: this.student.grade[6],lineTension: 0, label: this.topics[6], fill : false },
-      { data: this.student.grade[7],lineTension: 0, label: this.topics[7], fill : false },
-      { data: this.student.grade[8],lineTension: 0, label: this.topics[8], fill : false },
-      { data: this.student.grade[9],lineTension: 0, label: this.topics[9], fill : false },
-      { data: this.student.grade[10],lineTension: 0, label: this.topics[10], fill : false },
-      { data: this.student.grade[11],lineTension: 0, label: this.topics[11], fill : false },
-      { data: this.student.grade[12],lineTension: 0, label: this.topics[12], fill : false },
-      { data: this.student.grade[13],lineTension: 0, label: this.topics[13], fill : false },
-      { data: this.student.grade[14],lineTension: 0, label: this.topics[14], fill : false }
+      { data: this.grades[0],lineTension: 0, label: this.topics[0], fill : false },
+      { data: this.grades[1],lineTension: 0, label: this.topics[1], fill : false },
+      { data: this.grades[2],lineTension: 0, label: this.topics[2], fill : false },
+      { data: this.grades[3],lineTension: 0, label: this.topics[3], fill : false },
+      { data: this.grades[4],lineTension: 0, label: this.topics[4], fill : false },
+      { data: this.grades[5],lineTension: 0, label: this.topics[5], fill : false },
+      { data: this.grades[6],lineTension: 0, label: this.topics[6], fill : false },
+      { data: this.grades[7],lineTension: 0, label: this.topics[7], fill : false },
+      { data: this.grades[8],lineTension: 0, label: this.topics[8], fill : false },
+      { data: this.grades[9],lineTension: 0, label: this.topics[9], fill : false },
+      { data: this.grades[10],lineTension: 0, label: this.topics[10], fill : false },
+      { data: this.grades[11],lineTension: 0, label: this.topics[11], fill : false },
+      { data: this.grades[12],lineTension: 0, label: this.topics[12], fill : false },
+      { data: this.grades[13],lineTension: 0, label: this.topics[13], fill : false },
+      { data: this.grades[14],lineTension: 0, label: this.topics[14], fill : false }
     ];
     this.chart.chart.update()
+  }
+
+  first(){
+    this.grades = this.student.grade
+    this.updateGraph()
+  }
+
+  correct(){
+    this.grades = this.student.correct
+    this.updateGraph()
   }
 
   ngOnInit() {
@@ -115,6 +130,7 @@ export class GradeComponent implements OnInit {
           this.reg = true;
           this.user.getUser().subscribe(data =>{
             this.student = data;
+            this.grades = this.student.grade
             this.updateGraph()
           })
         }else if(data.message == "admin"){
@@ -122,6 +138,7 @@ export class GradeComponent implements OnInit {
           var id = this.route.snapshot.paramMap.get("id")
           this.user.getUserData(id).subscribe(data =>{
             this.student = data;
+            this.grades = this.student.grade
             this.updateGraph()
           })
         }
