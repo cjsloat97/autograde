@@ -13,10 +13,19 @@ import { FormGroup ,FormBuilder  } from '@angular/forms';
 
 export class AdminComponent implements OnInit {
   registerForm: FormGroup;
-  students : any = [{ id: 0, name :"Placeholder", grade : 0}];
-  headElements = ['Name','ID','Quiz','',''];
+  students : any = [{ id: 0, name :"Placeholder", grade : 0,quiz  : ["00"]}];
+  headElements = ['Name','ID','Quiz','Quiz ID','Password','Period','','',''];
+  boolTable : any = [false]
   periodList : any;
   periodID : any;
+  nameChg : any;
+  periodChg : any;
+  
+
+  topics = ['Fraction Operations','Fraction-Decimal-Percent',
+  'Rounding','Add Integers','Subtract Integers','Multiply Integers',
+  'Divide Integers','Unit Rate','Equivalent Ratios','Percent','Evalute Expressions'
+  ,'Algebra-Words Translation','Simplify Expressions','1-Step Equations','2-Step  Equations']
 
   constructor(private auth : AuthService,
      private router : Router,
@@ -33,11 +42,7 @@ export class AdminComponent implements OnInit {
         this.router.navigate(['login'])
       } else {
         if(data.message == "admin"){
-          this.user.getUser().subscribe(data =>{
-            this.periodList = data.period.answers
-            this.students = data.students
-            this.periodID = this.periodList[0]
-          })
+          this.updateList();
         }else{
           this.router.navigate(['login'])
         }
@@ -53,28 +58,49 @@ export class AdminComponent implements OnInit {
     if(!period){
       period = this.periodList[0]
     }
-    console.log(period)
+    if(!name){
+      window.alert('Enter a Name')
+      return
+    }
     this.user.register(name,period).subscribe(() =>
      this.updateList());
+     window.alert('Student Created!')
   }
 
   registerUser(event) {
     const target = event.target
     const username = "blank"
     const period = target.querySelector('#period').value
-    this.user.register(username,period).subscribe(() =>
+    if (period){
+      this.user.register(username,period).subscribe(() =>
       this.updateList());
+      window.alert('Period Created!')
+    }else{
+      window.alert('Please Enter a Period Name')
+    }
   }
 
-  removeStudent(userID){
-    this.user.delete(userID).subscribe(() =>
+  removeStudent(userID,name){
+    if(prompt('You are trying to DELETE ' + name + '\nPlease type "delete ' + name + '" for security') === ("delete " + name)){
+      this.user.delete(userID).subscribe(() =>
       this.updateList());
+      window.alert('Student Deleted!')
+    }else{
+      window.alert("Invalid Confirmation");
+    }
   }
 
   updateList(){
+    this.boolTable = [false]
     this.user.getUser().subscribe(data =>{
+      this.periodList = data.period.answers
       this.students = data.students
-    })
+      this.periodID = this.periodList[0]
+      for (var i = 0; i < this.students.length; i++){
+        this.boolTable[i] = false
+      }
+      
+    });
   }
 
   lastPeriod(){
@@ -95,12 +121,58 @@ export class AdminComponent implements OnInit {
     this.periodID = this.periodList[index]
   }
 
-  advanceDay(){
-    this.user.advance().subscribe(data =>{
-      window.alert(data.message)
-      this.updateList();  
-    })
+  deletePeriod(){
+    for (var i = 0; i < this.students.length; i++){
+      if (this.students[i].period == this.periodID){
+        window.alert('Period Not Empty!')
+        return
+      }
+    }
+    if(prompt('You are trying to DELETE ' + this.periodID + '\nPlease type "delete ' + this.periodID + '" for security') === ("delete " + this.periodID)){
+      this.user.deletePeriod(this.periodID).subscribe(() => {
+        this.updateList()
+        window.alert('Period Deleted')
+      });
+    }else{
+      window.alert("Invalid Confirmation");
+    }
+  }
 
+  modify(index){
+    for (var i = 0; i < this.boolTable.length; i++){
+      if (this.boolTable[i]){
+        return
+      }
+    }
+    this.boolTable[index] = true
+  }
+
+  update(index,name){
+    if(prompt('You are trying to EDIT ' + name + '\nPlease type "edit ' + name + '" for security') === ("edit " + name)){
+      if(!this.nameChg){
+        this.nameChg = this.students[index].user
+      }
+      if(!this.periodChg){
+        this.periodChg = this.students[index].period
+      }
+      this.user.editUser(this.nameChg,this.periodChg,this.students[index]._id).subscribe(() => this.updateList());
+    }else{
+      window.alert("Invalid Confirmation");
+    }
+    this.boolTable[index] = false
+    this.nameChg = null
+    this.periodChg = null
+  }
+
+  advanceDay(){
+    if(prompt('You are trying to ADVANCE DAY' + '\nPlease type "advance day" for security') === ("advance day")){
+      this.user.advance().subscribe(data =>{
+        window.alert(data.message);
+        this.updateList();
+      })
+    }else{
+      window.alert("Invalid Confirmation");
+    }
   }
   
 }

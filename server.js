@@ -24,7 +24,6 @@ The point of this server is to act as the API for the Autograder front end
   autograder. It handles communicating with the database, providing information
   on students, tests, and has grading feature when a student submits their answers
 
-TODO: I need the database to actually come up
 */
 
 //Mongo Config
@@ -90,6 +89,7 @@ app.post('/api/database', function(req,res){
         .then(function(result) {
           result.answers.push(ID);
           result.save();
+          res.json({success: true})
       })
     }else{ 
       const newStudent = new Student({
@@ -119,17 +119,23 @@ app.post('/api/advance', function(req,res){
           for (i = 0; i < students.length; i++ ){
             currentQuiz = students[i].quiz
             index = quizOrder.indexOf(currentQuiz) + 1
-            if (index >= quizOrder.length){
-              index = 0
+            while (true){
+              if (index >= quizOrder.length){
+                index = 0
+                break
+              }
+              testCat = parseInt(quizOrder[index][0]) //Which topic
+              if (students[i].mastery[testCat] != "Yes"){ //Mastery in place
+                break
+              }
+              index += 1
             }
             students[i].quiz = quizOrder[index]
             students[i].save()
           }
         });  
       }
-      
     );
-
     res.send({
       success: true,
       message: "Day Advacned"
@@ -156,6 +162,74 @@ app.delete('/api/database/:id', function(req,res){
   }
 });
 
+//MongoDB period deletion
+app.delete('/api/database/period/:id', function(req,res){
+  thisID = req.session.userID
+  if(thisID === 999){
+    Quizes.findOne({name : "period"})
+    .then(function(result) {
+      for(var i = 0; i < result.answers.length; i++){
+        if (result.answers[i] == req.params.id){
+          result.answers.splice(i,1)
+          break
+        }
+      }
+      result.markModified('answers')
+      result.save();
+      res.json({success: true})
+    })
+  }else{
+    res.send({
+      success: false,
+      message: "not admin"
+    });
+  }
+});
+
+//MongoDB student edit information
+app.post('/api/database/:id', function(req,res){
+  thisID = req.session.userID
+  if(thisID === 999){
+    Student.findById(req.params.id)
+      .then(function(student){
+        student.user = req.body.nameChg
+        student.period = req.body.periodChg
+        student.save()
+        res.json({success: true})}
+      );
+  }else{
+    res.send({
+      success: false,
+      message: "not admin"
+    });
+  }
+});
+
+
+//MongoDB student edit grades
+app.post('/api/database/grades/:id', function(req,res){
+  thisID = req.session.userID
+  if(thisID === 999){
+    Student.findById(req.params.id)
+      .then(function(student){
+        if(req.body.first){
+          student.grade[req.body.index] = req.body.grades
+          student.markModified('grade')
+        }else{
+          student.correct[req.body.index] = req.body.grades
+          student.markModified('correct')
+        }
+        student.save()
+        res.json({success: true})}
+      );
+  }else{
+    res.send({
+      success: false,
+      message: "not admin"
+    });
+  }
+});
+
 //Get specific student info by id
 app.get('/api/database/:id', function(req,res){
   thisID = req.session.userID
@@ -169,18 +243,6 @@ app.get('/api/database/:id', function(req,res){
     });
   }
 });
-
-//This is where the test bank will go
-/*
-const questions =
-  [{ id : 1,
-    test: [{id : 1, question: "8 + 2 = ?", a : 1, b : 10, c : 3, d : 4},
-  { id: 2, question: "4 + 1 = ?", a : 1, b : 10, c : 5, d : 4,},
-  { id: 3, question: "5 - 9 = ?", a : 1, b : 10, c : 3, d : -4,},
-  { id: 4, question: "7 + 5 = ?", a : 12, b : 10, c : 3, d : 4,}],
-  correct : ["b","c","d","a"]
-}]
-*/
 
 /*
 Works to handle all login requests (both user and admin)
@@ -259,44 +321,14 @@ app.get('/api/database', function(req, res) {
   }
 });
 
-//Similar to above, except returns the test
-//This will change a lot when database and test schedule is implemented
-/*
-app.get('/api/test', function(req, res){
-  var testID = req.body.testID;
-  var thisID = req.session.userID
-  if(thisID){
-    Quizes.findOne({name : testID})
-    .then(function(quiz){
-      if (quiz){
-        req.session.userID = student._id;
-        res.send({
-          success: true,
-          message: "User"
-        });
-      }else{
-        res.send({
-          success: false,
-          message: "idk you fucked up somewhere"
-        }); 
-      }
-    });
-  }else{
-    res.send({
-      success: false,
-      message: "idk you fucked up somewhere"
-    });
-  }
-});
-*/
-
 /*
 This is the grader, it recieves the students answers, checks the database,
   and returns the correct grade (ideally)
 
 First, the method checks to make sure the user is still logged in
   if the user is found -> parse incoming data, find test, compare answers
-    and compute grade, then send it back
+    and compute grade, see if they have already taken the test,
+    mark the first grade or the corrected grade, then send it back
   else, return error
 */
 app.post('/api/grader', function(req,res){
@@ -310,10 +342,23 @@ app.post('/api/grader', function(req,res){
         .then(function(quiz){
           const answerKey = quiz.answers
           testCat = parseInt(testID[0]) //Which topic
-          testNum = parseInt(testID[1]) //WHich number
+          testNum = parseInt(testID[1]) //Which number
           var count = 0
-          for (i = 0; i < answers.length; i++) { 
-            if (answers[i] == answerKey[i]){
+          for (i = 0; i < answers.length; i++) { //Clean up the answer as best we can
+            answers[i] = answers[i].trim()
+            if (/\s/  .test(answers[i])){
+              answers[i] = answers[i].replace(/\s\s+/g, ' ');
+              answers[i] = answers[i].replace(' ','+')
+            }
+            try {
+              eval(answers[i])
+            } catch (error) {
+              if (answers[i] == answerKey[i]){
+                count++;
+              }
+              continue
+            }
+            if ( eval(answers[i]) == eval(answerKey[i])){
               count++;
             }
           }
@@ -329,6 +374,10 @@ app.post('/api/grader', function(req,res){
             })
           }else if(student.grade[testCat][testNum] == null){
             student.grade[testCat][testNum] = count
+            if (count == 100){ //Condition for mastery goes here
+              student.mastery[testCat] = "Yes"
+              student.markModified('mastery');
+            }
             student.markModified('grade');
             student.save();
             res.send({
@@ -341,9 +390,7 @@ app.post('/api/grader', function(req,res){
               grade : true
             })
           }
- 
         });
-        
     });   
   } else{
     res.send({

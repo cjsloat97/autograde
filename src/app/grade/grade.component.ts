@@ -13,8 +13,14 @@ import { Color, BaseChartDirective, Label } from 'ng2-charts';
 })
 export class GradeComponent implements OnInit {
 
-  student : any = {grade : [[10,20,30],[10,30,40],[12]]};
+  student : any = {grade : [[10]]};
   grades : any = this.student.grade
+  mastery : any = ["No"]
+  editing : any = [false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]
+  gradeChg : any = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null] 
+  admin = false;
+  reg = false;
+  firstDisp = true;
 
   topics = ['Fraction Operations','Fraction-Decimal-Percent',
     'Rounding','Add Integers','Subtract Integers','Multiply Integers',
@@ -22,7 +28,7 @@ export class GradeComponent implements OnInit {
     ,'Algebra-Words Translation','Simplify Expressions','1-Step Equations','2-Step  Equations']
   
   headElements = ['Topic', 'QQ1', 'QQ2', 'QQ3','QQ4','QQ5','QQ6','QQ7',
-    'QQ8','QQ9','QQ10','QQ11','QQ12','QQ13','QQ14','QQ15'];
+    'QQ8','QQ9','QQ10','QQ11','QQ12','QQ13','QQ14','QQ15', 'Mastery',''];
 
   public lineChartData: ChartDataSets[] = [
     { data: this.grades[0],lineTension: 0, label: this.topics[0], fill : false }
@@ -84,11 +90,22 @@ export class GradeComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) public chart: BaseChartDirective;
   
 
-  admin = false;
-  reg = false;
-
   constructor(private auth : AuthService, private route: ActivatedRoute,
      private router : Router, private user: UserService) { }
+
+
+  updateTable(){
+    var id = this.route.snapshot.paramMap.get("id")
+    this.user.getUserData(id).subscribe(data =>{
+      this.student = data;
+      if(this.firstDisp)
+        this.grades = this.student.grade
+      else
+        this.grades = this.student.correct
+      this.mastery = this.student.mastery
+      this.updateGraph()
+    })
+  }
 
   updateGraph(){
     this.lineChartData = [
@@ -114,11 +131,42 @@ export class GradeComponent implements OnInit {
   first(){
     this.grades = this.student.grade
     this.updateGraph()
+    this.firstDisp = true;
   }
 
   correct(){
     this.grades = this.student.correct
     this.updateGraph()
+    this.firstDisp = false;
+  }
+
+  edit(index){
+    for (var i = 0; i < this.editing.length; i++){
+      if (this.editing[i])
+        return
+    }
+    this.editing[index] = true
+  }
+
+  update(index){
+    if(prompt('You are trying to EDIT ' + this.student.user + '\nPlease type "edit ' + this.student.user + '" for security') === ("edit " + this.student.user)){
+      for (var i = 0; i < this.gradeChg.length; i++){
+        if (!this.gradeChg[i])
+          this.gradeChg[i] = this.grades[index][i]
+        if (typeof this.gradeChg[i] === 'string')
+          this.gradeChg[i] = Number(this.gradeChg[i])
+        if (this.gradeChg[i] === '/')
+          this.gradeChg[i] = null
+      }
+      this.user.editGrade(index,this.gradeChg,this.firstDisp,this.route.snapshot.paramMap.get("id"))
+        .subscribe(() =>
+          this.updateTable()
+        );
+    }else{
+      window.alert("Invalid Confirmation")
+    }
+    this.editing[index] = false
+    this.gradeChg  = []
   }
 
   ngOnInit() {
@@ -128,19 +176,10 @@ export class GradeComponent implements OnInit {
       } else {
         if(data.message != "admin"){
           this.reg = true;
-          this.user.getUser().subscribe(data =>{
-            this.student = data;
-            this.grades = this.student.grade
-            this.updateGraph()
-          })
+          this.updateTable();
         }else if(data.message == "admin"){
           this.admin = true;
-          var id = this.route.snapshot.paramMap.get("id")
-          this.user.getUserData(id).subscribe(data =>{
-            this.student = data;
-            this.grades = this.student.grade
-            this.updateGraph()
-          })
+          this.updateTable();
         }
       }
     })

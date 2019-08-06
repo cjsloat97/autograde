@@ -1,6 +1,7 @@
 <div>
   <h2>Grades: {{student.user}}</h2>
   <br>
+  <h2 *ngIf="admin">In order to remove a grade, enter the character "/" into the editor</h2>
   <button class="btn btn-info" (click)="first()">First Attempt</button>
   <button class="btn btn-info" (click)="correct()">Corrections</button>
   <table mdbTable class="table">
@@ -12,21 +13,71 @@
     <tbody>
       <tr mdbTableCol *ngFor="let el of grades; let i = index">
         <th scope="row">{{topics[i]}}</th>
-        <td>{{el[0]}}</td>
-        <td>{{el[1]}}</td>
-        <td>{{el[2]}}</td>
-        <td>{{el[3]}}</td>
-        <td>{{el[4]}}</td>
-        <td>{{el[5]}}</td>
-        <td>{{el[6]}}</td>
-        <td>{{el[7]}}</td>
-        <td>{{el[8]}}</td>
-        <td>{{el[9]}}</td>
-        <td>{{el[10]}}</td>
-        <td>{{el[11]}}</td>
-        <td>{{el[12]}}</td>
-        <td>{{el[13]}}</td>
-        <td>{{el[14]}}</td>
+        <td>
+          <div [hidden] = "editing[i]">{{el[0]}}</div>
+          <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[0] placeholder={{el[0]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[1]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[1] placeholder={{el[1]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[2]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[2] placeholder={{el[2]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[3]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[3] placeholder={{el[3]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[4]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[4] placeholder={{el[4]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[5]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[5] placeholder={{el[5]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[6]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[6] placeholder={{el[6]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[7]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[7] placeholder={{el[7]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[8]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[8] placeholder={{el[8]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[9]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[9] placeholder={{el[9]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[10]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[10] placeholder={{el[10]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[11]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[11] placeholder={{el[11]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[12]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[12] placeholder={{el[12]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[13]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[13] placeholder={{el[13]}}/></div>
+        </td>
+        <td>
+            <div [hidden] = "editing[i]">{{el[14]}}</div>
+            <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[14] placeholder={{el[14]}}/></div>
+        </td>
+        <td>{{mastery[i]}}</td>
+        <td *ngIf="admin">
+            <button [hidden] = "editing[i]" class="btn btn-warning" (click)="edit(i)">Edit</button>
+            <button [hidden] = "!editing[i]" class="btn btn-warning" (click)="update(i)">Update</button>
+        </td>
       </tr>
     </tbody>
   </table>

@@ -6,6 +6,7 @@
   <br>
   <button class="btn btn-info" (click)="lastPeriod()">Perious Period</button>
   <button class="btn btn-info" (click)="nextPeriod()">Next Period</button>
+  <button class="btn btn-danger" (click)="deletePeriod()">Delete Period</button>
   <br>
   <br>
 
@@ -16,26 +17,35 @@
         </tr>
       </thead>
       <tbody>
-        <tr mdbTableCol *ngFor="let student of students">
-          <td *ngIf="student.period == periodID">{{student.user}}</td>
+        <tr mdbTableCol *ngFor="let student of students; let i = index">
+          <td *ngIf="student.period == periodID">
+            <div [hidden] = "boolTable[i]">{{student.user}}</div>
+            <div [hidden] = "!boolTable[i]"><input type="text" placeholder={{student.user}} [(ngModel)] = nameChg/></div>
+          </td>
           <td *ngIf="student.period == periodID">{{student._id}}</td>
+          <td *ngIf="student.period == periodID">{{topics[(student.quiz[0] - 0)]}} - {{(student.quiz[1] - 0) + 1}}</td>
           <td *ngIf="student.period == periodID">{{student.quiz}}</td>
-          <td *ngIf="student.period == periodID"><a routerLink="/grade/{{student._id}}">Grades</a></td>
-          <td *ngIf="student.period == periodID"><button class="btn btn-danger" (click)="removeStudent(student._id)">Delete</button></td> 
+          <td *ngIf="student.period == periodID">{{student.password}}</td>
+          <td *ngIf="student.period == periodID">
+            <div [hidden] = "boolTable[i]">{{student.period}}</div>
+            <div [hidden] = "!boolTable[i]">        
+              <select class="form-control" [(ngModel)] = periodChg>
+                <option *ngFor="let id of periodList">{{id}}</option>
+              </select>
+            </div>
+          </td>
+          <a routerLink="/grade/{{student._id}}"><td *ngIf="student.period == periodID"><button class="btn btn-success" >Grades</button></td></a>
+          <td *ngIf="student.period == periodID">
+            <button class="btn btn-warning" [hidden] = "boolTable[i]" (click)="modify(i)">Edit</button>
+            <button class="btn btn-warning" [hidden] = "!boolTable[i]" (click)="update(i,student.user)">Update</button>
+          </td>
+          <td *ngIf="student.period == periodID"><button class="btn btn-danger" (click)="removeStudent(student._id,student.user)">Delete</button></td> 
           <!--<th scope="row">Yes</th>
           Need the ngIf for each line unfortunately-->
         </tr>
       </tbody>
     </table>
-  <!--
-  <ul class="students">
-    <li *ngFor="let student of students">
-      {{student.user}} | ID: {{student._id}} | Quiz: {{student.quiz}} | <a routerLink="/grade/{{student._id}}">Grades</a>
-      <button class="btn btn-danger" (click)="removeStudent(student._id)">Delete</button>
-    </li>
-  </ul>
-  <br>
-  -->
+
   <form class= "form-inline" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
         <label for="Student Name">Student Name</label>
@@ -54,7 +64,7 @@
   <form (submit)="registerUser($event)">
     <input type="text" placeholder="Period" id="period">
     <button type="submit" class="btn btn-warning">New Period</button>
-    </form>
+  </form>
   <br>
   <a routerLink="/"><button class="btn btn-danger">Logout</button></a>
 </div>
