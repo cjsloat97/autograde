@@ -13,11 +13,12 @@ import { TestService } from '../test.service';
 export class TestComponent implements OnInit {
   
   //Placeholders
-  quiz = "00"
-  corrected = false
-
-  submitted = false
+  quiz = "00";
+  corrected = false;
+  next = false;
+  submitted = false;
   grade = 0;
+  queue : Array<String>;
 
   currTest:any = { 
       id : 0,
@@ -28,22 +29,39 @@ export class TestComponent implements OnInit {
   constructor(private auth : AuthService, private router : Router, private user: UserService, private test : TestService) { }
 
   ngOnInit() { //Makes sure users are logged
+    this.updateTest();
+  }
+
+  updateTest(){
     this.auth.checkLogged().subscribe(data=>{
       if (data.success === false){
         this.router.navigate(['login'])
       } else {
         if(data.message != "admin"){
-          this.quiz = data.quiz;
-          /*
-          this.test.retrieveTest().subscribe(data =>{
-            this.currTest = data;
-          })
-          */
+          this.queue = data.queue;
+          if (data.queue.length != 0){ 
+            this.quiz = data.queue[0];
+          }else{
+            this.quiz = data.quiz;
+          }
         }else{
           this.router.navigate(['login'])
         }
       }
     })
+  }
+
+  onNext(){
+    this.updateTest();
+    if (this.queue.length != 0){
+      this.next = false;
+      this.corrected = false;
+      this.submitted = false;
+      this.grade = 0;
+      window.alert("You are behind, the next quiz will be displayed")
+    }else{
+      window.alert("You are all caught up!")
+    }
   }
 
   onSubmit(event){ //Need some data formatting before submitting
@@ -53,8 +71,11 @@ export class TestComponent implements OnInit {
     this.test.submitToGrade(answers,this.quiz).subscribe(data =>{
       if(data.grade == true){
         this.grade = 100
+        this.next = true
       }else{
         this.grade = data.grade
+        if(this.grade == 100)
+          this.next = true
         this.corrected = data.corrected
       }
     })

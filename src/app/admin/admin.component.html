@@ -1,5 +1,6 @@
 <div>
   <h2>My Students - Period {{periodID}}</h2>
+  <h4>All Periods: {{periodList}}</h4>
   <br>
   <button class="btn btn-success" (click)="advanceDay()">Advance Day</button>
   <br>
@@ -34,6 +35,7 @@
               </select>
             </div>
           </td>
+          <td *ngIf="student.period == periodID && student.queue">{{student.queue[0]}}</td>
           <a routerLink="/grade/{{student._id}}"><td *ngIf="student.period == periodID"><button class="btn btn-success" >Grades</button></td></a>
           <td *ngIf="student.period == periodID">
             <button class="btn btn-warning" [hidden] = "boolTable[i]" (click)="modify(i)">Edit</button>

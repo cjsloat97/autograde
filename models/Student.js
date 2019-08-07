@@ -31,13 +31,11 @@ const StudentSchema = new Schema({
         [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
         [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
         [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
         [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]]
     },
     correct: {
         type: Array,
         default : [[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
         [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
         [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
         [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
@@ -60,6 +58,10 @@ const StudentSchema = new Schema({
     quiz : {
         type: String,
         default : "00"
+    },
+    queue : {
+        type : Array,
+        default : []
     }
 });
 

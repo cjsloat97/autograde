@@ -1,9 +1,12 @@
 <div>
   <h2>Grades: {{student.user}}</h2>
   <br>
-  <h2 *ngIf="admin">In order to remove a grade, enter the character "/" into the editor</h2>
-  <button class="btn btn-info" (click)="first()">First Attempt</button>
-  <button class="btn btn-info" (click)="correct()">Corrections</button>
+  <h3 *ngIf="admin">Queue: {{student.queue}}</h3>
+  <div>
+    <button class="btn btn-info" (click)="first()">First Attempt</button>
+    <button class="btn btn-info" (click)="correct()">Corrections</button>
+    <h6 *ngIf="admin">In order to remove a grade, enter the character "/" into the editor. Grades should only be changed a couple at a time and as a last resort if you think a quiz has incorrect answers. It will not always work as expected due to the nature of the problem. However, it should remove tests from the queue and update mastery in most circumstances.</h6>
+  </div>
   <table mdbTable class="table">
     <thead class="thead-dark">
       <tr>

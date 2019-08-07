@@ -23,8 +23,8 @@
       </li>
     </ul>
     <button type="submit" class="btn btn-success">Submit</button>
-  </form>
--->
+  </form>-->
+
   <img src="../../assets/QQ/{{quiz}}.PNG">
   <br>
   <form (submit)="onSubmit($event)">
@@ -48,6 +48,7 @@
     </h3>
   </div>
   <br>
+  <button *ngIf="next" type="button" (click) = "onNext()" class="btn btn-success">Next</button>
   <a routerLink="/user"><button type="button" class="btn btn-primary">Back</button></a>
 
 

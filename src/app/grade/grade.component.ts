@@ -176,7 +176,16 @@ export class GradeComponent implements OnInit {
       } else {
         if(data.message != "admin"){
           this.reg = true;
-          this.updateTable();
+          this.user.getUser().subscribe(data =>{
+            this.student = data;
+            console.log(this.student)
+            if(this.firstDisp)
+              this.grades = this.student.grade
+            else
+              this.grades = this.student.correct
+            this.mastery = this.student.mastery
+            this.updateGraph()
+          })
         }else if(data.message == "admin"){
           this.admin = true;
           this.updateTable();

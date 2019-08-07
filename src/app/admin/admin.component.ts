@@ -14,7 +14,7 @@ import { FormGroup ,FormBuilder  } from '@angular/forms';
 export class AdminComponent implements OnInit {
   registerForm: FormGroup;
   students : any = [{ id: 0, name :"Placeholder", grade : 0,quiz  : ["00"]}];
-  headElements = ['Name','ID','Quiz','Quiz ID','Password','Period','','',''];
+  headElements = ['Name','ID','Quiz','Quiz ID','Password','Period','Queue','','',''];
   boolTable : any = [false]
   periodList : any;
   periodID : any;
@@ -42,7 +42,15 @@ export class AdminComponent implements OnInit {
         this.router.navigate(['login'])
       } else {
         if(data.message == "admin"){
-          this.updateList();
+          this.boolTable = [false]
+          this.user.getUser().subscribe(data =>{
+            this.periodList = data.period.answers
+            this.students = data.students
+            this.periodID = this.periodList[0]
+            for (var i = 0; i < this.students.length; i++){
+              this.boolTable[i] = false
+            }  
+          });
         }else{
           this.router.navigate(['login'])
         }
@@ -72,8 +80,10 @@ export class AdminComponent implements OnInit {
     const username = "blank"
     const period = target.querySelector('#period').value
     if (period){
+      this.periodID = period
+      console.log(this.periodID)
       this.user.register(username,period).subscribe(() =>
-      this.updateList());
+        this.updateList());
       window.alert('Period Created!')
     }else{
       window.alert('Please Enter a Period Name')
@@ -95,11 +105,14 @@ export class AdminComponent implements OnInit {
     this.user.getUser().subscribe(data =>{
       this.periodList = data.period.answers
       this.students = data.students
-      this.periodID = this.periodList[0]
       for (var i = 0; i < this.students.length; i++){
         this.boolTable[i] = false
       }
-      
+      for (var i = 0; i < this.periodList.length; i++){
+        if (this.periodList[i] == this.periodID)
+          return
+      }
+      this.periodID = this.periodList[0]
     });
   }
 
