@@ -59,17 +59,17 @@ export class GradeComponent implements OnInit {
   };
 
   public lineChartColors: Color[] = [
-    { // grey
+    { // Olive Drab
       backgroundColor: 'rgba(148,159,177,0.2)',
-      borderColor: 'rgba(148,159,177,1)',
+      borderColor: 'olivedrab',
       pointBackgroundColor: 'rgba(148,159,177,1)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     },
-    { // dark grey
+    { // orangered
       backgroundColor: 'rgba(148,159,177,0.2)',
-      borderColor: 'rgba(77,83,96,1)',
+      borderColor: 'orangered',
       pointBackgroundColor: 'rgba(77,83,96,1)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
@@ -78,6 +78,102 @@ export class GradeComponent implements OnInit {
     { // red
       backgroundColor: 'rgba(148,159,177,0.2)',
       borderColor: 'red',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // blue
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'blue',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // yellow
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'yellow',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // purple
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'purple',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // brown
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'brown',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // orange
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'orange',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // cyan
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'cyan',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // black
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'black',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // Dark Magenta
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'darkmagenta',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // lime
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'lime',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // teal
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'teal',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // slate grey
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'slategrey',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // pale violet red
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'palevioletred',
       pointBackgroundColor: 'rgba(148,159,177,1)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
