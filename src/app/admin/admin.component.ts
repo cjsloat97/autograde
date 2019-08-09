@@ -178,14 +178,14 @@ export class AdminComponent implements OnInit {
   }
 
   advanceDay(){
-    if(prompt('You are trying to ADVANCE DAY' + '\nPlease type "advance day" for security') === ("advance day")){
+    //if(prompt('You are trying to ADVANCE DAY' + '\nPlease type "advance day" for security') === ("advance day")){
       this.user.advance().subscribe(data =>{
-        window.alert(data.message);
+        //window.alert(data.message);
         this.updateList();
       })
-    }else{
-      window.alert("Invalid Confirmation");
-    }
+    //}else{
+      //window.alert("Invalid Confirmation");
+    //}
   }
   
 }
