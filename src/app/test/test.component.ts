@@ -40,9 +40,9 @@ export class TestComponent implements OnInit {
         if(data.message != "admin"){
           this.queue = data.queue;
           if (data.queue.length != 0){ 
-            this.quiz = data.queue[0];
+            this.quiz = data.queue[0][0] + ',' + data.queue[0][1];
           }else{
-            this.quiz = data.quiz;
+            this.quiz = data.quiz[0] + ',' + data.quiz[1];
           }
         }else{
           this.router.navigate(['login'])

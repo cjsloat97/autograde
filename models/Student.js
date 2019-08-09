@@ -56,8 +56,8 @@ const StudentSchema = new Schema({
         default : ["No","No","No","No","No","No","No","No","No","No","No","No","No","No","No"]
     },
     quiz : {
-        type: String,
-        default : "00"
+        type: Array,
+        default : [0,0]
     },
     queue : {
         type : Array,

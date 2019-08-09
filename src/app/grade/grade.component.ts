@@ -18,6 +18,7 @@ export class GradeComponent implements OnInit {
   mastery : any = ["No"]
   editing : any = [false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]
   gradeChg : any = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null] 
+  prettyQueue = ""
   admin = false;
   reg = false;
   firstDisp = true;
@@ -194,6 +195,13 @@ export class GradeComponent implements OnInit {
     var id = this.route.snapshot.paramMap.get("id")
     this.user.getUserData(id).subscribe(data =>{
       this.student = data;
+      for (var i = 0; i < this.student.queue.length; i++){
+        if (i != this.student.queue.length - 1){
+          this.prettyQueue += "(" + data.queue[i] + ")" + ","
+        }else{
+          this.prettyQueue += "(" + data.queue[i] + ")"
+        }
+      }
       if(this.firstDisp)
         this.grades = this.student.grade
       else
@@ -274,7 +282,6 @@ export class GradeComponent implements OnInit {
           this.reg = true;
           this.user.getUser().subscribe(data =>{
             this.student = data;
-            console.log(this.student)
             if(this.firstDisp)
               this.grades = this.student.grade
             else

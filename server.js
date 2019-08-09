@@ -121,7 +121,13 @@ app.post('/api/advance', function (req, res) {
           .then(function (students) {
             for (i = 0; i < students.length; i++) {
               currentQuiz = students[i].quiz
-              index = quizOrder.indexOf(currentQuiz) + 1
+              index = 0
+              for(index; index < quizOrder.length; index++){
+                if (currentQuiz[0] == quizOrder[index][0] && currentQuiz[1] == quizOrder[index][1]){
+                  index += 1
+                  break
+                }
+              }
               if (students[i].correct[currentQuiz[0]][currentQuiz[1]] != 100) {
                 if (!students[i].queue.includes(currentQuiz))
                   students[i].queue.push(currentQuiz)
@@ -218,14 +224,9 @@ function correctQueue(student) {
     for (var i = 0; i < student.queue.length; i++) {
       var testID = student.queue[i]
       if (student.grade[testID[0]][testID[1]] == 100) {
-        console.log('Working here')
-        console.log(student.queue)
-        console.log(testID)
-        console.log(student.queue.splice(student.queue.indexOf(testID, 1)))
         break
       }
       if (student.correct[testID[0]][testID[1]] == 100) {
-        console.log('Working here2')
         student.queue.splice(student.queue.indexOf(testID, 1))
         break
       }
@@ -371,8 +372,9 @@ app.post("/api/grader", function (req, res) {
         Quizes.findOne({ name: testID })
           .then(function (quiz) {
             const answerKey = quiz.answers;
-            testCat = parseInt(testID[0]); //Which topic
-            testNum = parseInt(testID[1]); //Which number
+            idParse = testID.split(",")
+            testCat = parseInt(idParse[0]); //Which topic
+            testNum = parseInt(idParse[1]); //Which number
             var count = 0;
             for (i = 0; i < answers.length; i++) { //Clean up the answer as best we can 
               answers[i] = answers[i].trim();
@@ -397,9 +399,7 @@ app.post("/api/grader", function (req, res) {
             if (student.grade[testCat][testNum] != null && student.correct[testCat][testNum] != 100) { //Corrections
               student.correct[testCat][testNum] = count
               if (count == 100) {
-                console.log(student.queue)
                 student.queue.splice(student.queue.indexOf(testID), 1)
-                console.log(student.queue)
                 student.markModified('queue');
               }
               student.markModified('correct');
@@ -412,19 +412,15 @@ app.post("/api/grader", function (req, res) {
             } else if (student.grade[testCat][testNum] == null) { //First attempt
               student.grade[testCat][testNum] = count
               student.correct[testCat][testNum] = count
+              student.markModified('grade');
+              student.markModified('correct');
               if (count == 100) { //Condition for mastery goes here
                 if (student.queue.length != 0) {
                   student.queue.splice(student.queue.indexOf(testID), 1)
                 }
                 student.mastery[testCat] = "Yes"
                 student.markModified('mastery');
-              } else {//Add to queue
-                if (!student.queue.includes(currentQuiz))
-                  student.queue.push(currentQuiz)
-                student.markModified('queue');
               }
-              student.markModified('grade');
-              student.markModified('correct');
               student.save();
               res.send({
                 success: true,
