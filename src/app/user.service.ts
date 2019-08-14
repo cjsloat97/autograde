@@ -20,6 +20,11 @@ export class UserService {
     {withCredentials: true})
   }
 
+  reset(){//reset the schoolyear
+    return this.http.delete<any>(url +'/api/reset',
+    {withCredentials: true})
+  }
+
   getUserData(userID) { //Get data of user based on userID
     return this.http.get<any>(url + '/api/database/' + userID,
     {withCredentials: true})

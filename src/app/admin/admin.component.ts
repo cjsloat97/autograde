@@ -14,12 +14,13 @@ import { FormGroup ,FormBuilder  } from '@angular/forms';
 export class AdminComponent implements OnInit {
   registerForm: FormGroup;
   students : any = [{ id: 0, name :"Placeholder", grade : 0,quiz  : ["00"]}];
-  headElements = ['Name','ID','Quiz','Quiz ID','Password','Period','Queue','','',''];
+  headElements = ['Name','ID','Quiz','Password','Period','Queue','Average','Enabled','','',''];
   boolTable : any = [false]
   periodList : any;
   periodID : any;
   nameChg : any;
   periodChg : any;
+  day : any;
   
 
   topics = ['Fraction Operations','Fraction-Decimal-Percent',
@@ -47,6 +48,7 @@ export class AdminComponent implements OnInit {
             this.periodList = data.period.answers
             this.students = data.students
             this.periodID = this.periodList[0]
+            this.day = data.order.day
             for (var i = 0; i < this.students.length; i++){
               this.boolTable[i] = false
             }  
@@ -75,13 +77,27 @@ export class AdminComponent implements OnInit {
      window.alert('Student Created!')
   }
 
+  calculate(){
+    window.alert("Yeet")
+  }
+
+  reset(){
+    if(prompt('You are trying to RESET EVERYTHING. Please note this cannot be undone!\nPlease type "reset everything" for security') === ("reset everything")){
+      this.user.reset().subscribe(() => {
+        window.alert('Year Reset')
+        this.updateList()
+      })
+    }else{
+      window.alert("Invalid Confirmation");
+    }
+  }
+
   registerUser(event) {
     const target = event.target
     const username = "blank"
     const period = target.querySelector('#period').value
     if (period){
       this.periodID = period
-      console.log(this.periodID)
       this.user.register(username,period).subscribe(() =>
         this.updateList());
       window.alert('Period Created!')
@@ -105,6 +121,8 @@ export class AdminComponent implements OnInit {
     this.user.getUser().subscribe(data =>{
       this.periodList = data.period.answers
       this.students = data.students
+      this.day = data.order.day
+      console.log(this.day)
       for (var i = 0; i < this.students.length; i++){
         this.boolTable[i] = false
       }
@@ -178,14 +196,14 @@ export class AdminComponent implements OnInit {
   }
 
   advanceDay(){
-    //if(prompt('You are trying to ADVANCE DAY' + '\nPlease type "advance day" for security') === ("advance day")){
+    if(prompt('You are trying to ADVANCE DAY' + '\nPlease type "advance day" for security') === ("advance day")){
       this.user.advance().subscribe(data =>{
-        //window.alert(data.message);
+        window.alert(data.message);
         this.updateList();
       })
-    //}else{
-      //window.alert("Invalid Confirmation");
-    //}
+    }else{
+      window.alert("Invalid Confirmation");
+    }
   }
   
 }

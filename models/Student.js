@@ -62,6 +62,18 @@ const StudentSchema = new Schema({
     queue : {
         type : Array,
         default : []
+    },
+    enabled : {
+        type : Boolean,
+        default : true
+    },
+    average : {
+        type : Number,
+        default : 0
+    },
+    markingPeriods : {
+        type : Array,
+        default : []
     }
 });
 

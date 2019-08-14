@@ -1,7 +1,10 @@
 <div>
   <h2>Grades: {{student.user}}</h2>
-  <br>
+  <h4>Average: {{student.average}}</h4>
+  <h6 *ngIf="admin">Marking Period Averages: {{student.markingPeriods}} </h6>
   <h3 *ngIf="admin">Queue: {{prettyQueue}}</h3>
+  <h3 *ngIf="firstDisp"><strong>First Attmept</strong></h3>
+  <h3 *ngIf="!firstDisp"><strong>Corrections</strong></h3>
   <div>
     <button class="btn btn-info" (click)="first()">First Attempt</button>
     <button class="btn btn-info" (click)="correct()">Corrections</button>

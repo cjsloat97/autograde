@@ -81,7 +81,7 @@ app.use(function (req, res, next) {
 
 //MongoDB new student registration
 app.post('/api/database', function (req, res) {
-  thisID = req.session.userID
+  thisID = req.session.userID;
   var name = req.body.username;
   var ID = req.body.period;
   var pass = "secret"; //Add some hash code to 
@@ -117,13 +117,16 @@ app.post('/api/advance', function (req, res) {
     Quizes.findOne({ name: "order" })
       .then(function (result) {
         quizOrder = result.order
+        result.day += 1
+        result.markModified('day')
+        result.save()
         Student.find()
           .then(function (students) {
             for (i = 0; i < students.length; i++) {
               currentQuiz = students[i].quiz
               index = 0
-              for(index; index < quizOrder.length; index++){
-                if (currentQuiz[0] == quizOrder[index][0] && currentQuiz[1] == quizOrder[index][1]){
+              for (index; index < quizOrder.length; index++) {
+                if (currentQuiz[0] == quizOrder[index][0] && currentQuiz[1] == quizOrder[index][1]) {
                   index += 1
                   break
                 }
@@ -131,6 +134,13 @@ app.post('/api/advance', function (req, res) {
               if (students[i].correct[currentQuiz[0]][currentQuiz[1]] != 100) {
                 if (!students[i].queue.includes(currentQuiz))
                   students[i].queue.push(currentQuiz)
+                students[i].markModified('queue')
+              }
+              if (students[i].grade[currentQuiz[0]][currentQuiz[1]] == null) {
+                students[i].correct[currentQuiz[0]][currentQuiz[1]] = 0
+                students[i].average = calculateAverage(students[i])
+                students[i].markModified('average')
+                students[i].markModified('correct')
               }
               while (true) {
                 if (index >= quizOrder.length) {
@@ -167,6 +177,31 @@ app.delete('/api/database/:id', function (req, res) {
   if (thisID === 999) {
     Student.findById(req.params.id)
       .then(student => { student.remove().then(() => res.json({ success: true })) })
+  } else {
+    res.send({
+      success: false,
+      message: "not admin"
+    });
+  }
+});
+
+
+//MongoDB school year reset
+app.delete('/api/reset', function (req, res) {
+  thisID = req.session.userID
+  if (thisID === 999) {
+    Quizes.findOne({ name: "order" })
+      .then(function (result) {
+        Student.find()
+          .then(students => {
+            for (var i = 0; i < students.length; i++) {
+              students[i].remove()
+            }
+            result.day = 1
+            result.save()
+            res.send({ success: true })
+          })
+      })
   } else {
     res.send({
       success: false,
@@ -234,6 +269,21 @@ function correctQueue(student) {
     student.markModified('queue')
   }
 }
+
+function calculateAverage(student) {
+  var count = 0
+  var sum = 0
+  for (var i = 0; i < 15; i++) {
+    for (var j = 0; j < 15; j++) {
+      if (student.correct[i][j] != null) {
+        count += 1
+        sum += student.correct[i][j]
+      }
+    }
+  }
+  return sum / count;
+}
+
 
 //MongoDB student edit grades
 app.post('/api/database/grades/:id', function (req, res) {
@@ -326,16 +376,20 @@ app.get('/api/database', function (req, res) {
   thisID = req.session.userID
   if (thisID) {
     if (thisID === 999) {
-      Quizes.findOne({ name: "period" })
-        .then(function (period) {
-          Student.find()
-            .sort({ user: 1 })
-            .then(students => res.json(
-              {
-                students,
-                period
-              }
-            ))
+      Quizes.findOne({ name: "order" })
+        .then(order => {
+          Quizes.findOne({ name: "period" })
+            .then(function (period) {
+              Student.find()
+                .sort({ user: 1 })
+                .then(students => res.json(
+                  {
+                    students,
+                    period,
+                    order
+                  }
+                ))
+            })
         })
 
     } else {
@@ -365,75 +419,85 @@ First, the method checks to make sure the user is still logged in
 app.post("/api/grader", function (req, res) {
   thisID = req.session.userID;
   if (thisID) {
-    Student.findById(thisID)
-      .then(function (student) {
-        var answers = req.body.answers;
-        var testID = req.body.testID;
-        Quizes.findOne({ name: testID })
-          .then(function (quiz) {
-            const answerKey = quiz.answers;
-            idParse = testID.split(",")
-            testCat = parseInt(idParse[0]); //Which topic
-            testNum = parseInt(idParse[1]); //Which number
-            var count = 0;
-            for (i = 0; i < answers.length; i++) { //Clean up the answer as best we can 
-              answers[i] = answers[i].trim();
-              if (/\s/.test(answers[i])) {
-                answers[i] = answers[i].replace(/\s\s+/g, " ");
-                answers[i] = answers[i].replace(" ", "+")
-              }
-              try {
-                eval(answers[i]);
-                eval(answerKey[i]);
-              } catch (error) {
-                if (answers[i] == answerKey[i]) {
-                  count += 1;
+    Quizes.findOne({ name: "order" })
+      .then(function (order) {
+        Student.findById(thisID)
+          .then(function (student) {
+            var answers = req.body.answers;
+            var testID = req.body.testID;
+            Quizes.findOne({ name: testID })
+              .then(function (quiz) {
+                const answerKey = quiz.answers;
+                idParse = testID.split(",")
+                testCat = parseInt(idParse[0]); //Which topic
+                testNum = parseInt(idParse[1]); //Which number
+                var count = 0;
+                for (i = 0; i < answers.length; i++) { //Clean up the answer as best we can 
+                  answers[i] = answers[i].trim();
+                  if (/\s/.test(answers[i])) {
+                    answers[i] = answers[i].replace(/\s\s+/g, " ");
+                    answers[i] = answers[i].replace(" ", "+")
+                  }
+                  try {
+                    eval(answers[i]);
+                    eval(answerKey[i]);
+                  } catch (error) {
+                    if (answers[i] == answerKey[i]) {
+                      count += 1;
+                    }
+                    continue;
+                  }
+                  if (eval(answers[i]) == eval(answerKey[i])) {
+                    count += 1;
+                  }
                 }
-                continue;
-              }
-              if (eval(answers[i]) == eval(answerKey[i])) {
-                count += 1;
-              }
-            }
-            count = (count / 4) * 100;
-            if (student.grade[testCat][testNum] != null && student.correct[testCat][testNum] != 100) { //Corrections
-              student.correct[testCat][testNum] = count
-              if (count == 100) {
-                student.queue.splice(student.queue.indexOf(testID), 1)
-                student.markModified('queue');
-              }
-              student.markModified('correct');
-              student.save();
-              res.send({
-                success: true,
-                grade: count,
-                corrected: true
-              })
-            } else if (student.grade[testCat][testNum] == null) { //First attempt
-              student.grade[testCat][testNum] = count
-              student.correct[testCat][testNum] = count
-              student.markModified('grade');
-              student.markModified('correct');
-              if (count == 100) { //Condition for mastery goes here
-                if (student.queue.length != 0) {
-                  student.queue.splice(student.queue.indexOf(testID), 1)
+                count = (count / 4) * 100;
+
+                if (student.grade[testCat][testNum] != null && student.correct[testCat][testNum] != 100) { //Corrections
+                  student.correct[testCat][testNum] = count
+                  student.average = calculateAverage(student)
+                  student.markModified('average');
+                  if (count == 100) {
+                    student.queue.splice(student.queue.indexOf(testID), 1)
+                    student.markModified('queue');
+                  }
+                  student.markModified('correct');
+                  student.save();
+                  res.send({
+                    success: true,
+                    grade: count,
+                    corrected: true,
+                    average : student.average
+                  })
+                } else if (student.grade[testCat][testNum] == null) { //First attempt
+                  student.grade[testCat][testNum] = count
+                  student.correct[testCat][testNum] = count
+                  student.average = calculateAverage(student)
+                  student.markModified('grade');
+                  student.markModified('average');
+                  student.markModified('correct');
+                  if (count == 100) { //Condition for mastery goes here
+                    if (student.queue.length != 0) {
+                      student.queue.splice(student.queue.indexOf(testID), 1)
+                    }
+                    student.mastery[testCat] = "Yes"
+                    student.markModified('mastery');
+                  }
+                  student.save();
+                  res.send({
+                    success: true,
+                    grade: count,
+                    corrected: false,
+                    average : student.average
+                  })
+                } else {
+                  res.send({
+                    grade: true
+                  })
                 }
-                student.mastery[testCat] = "Yes"
-                student.markModified('mastery');
-              }
-              student.save();
-              res.send({
-                success: true,
-                grade: count,
-                corrected: false
-              })
-            } else {
-              res.send({
-                grade: true
-              })
-            }
+              });
           });
-      });
+      })
   } else {
     res.send({
       sucess: false,
@@ -459,7 +523,7 @@ app.get('/api/check', function (req, res) {
   } else if (thisID) {
     Student.findById(thisID)
       .then(function (student) {
-        res.send({ success: true, message: "Logged In", quiz: student.quiz, queue: student.queue });
+        res.send({ success: true, message: "Logged In", quiz: student.quiz, queue: student.queue, grades: student.grade, average : student.average });
       });
   } else {
     res.send({

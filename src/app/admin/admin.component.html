@@ -1,11 +1,13 @@
 <div>
   <h2>My Students - Period {{periodID}}</h2>
   <h4>All Periods: {{periodList}}</h4>
+  <h1>Day {{day}}</h1>
   <br>
   <button class="btn btn-success" (click)="advanceDay()">Advance Day</button>
+  <button class="btn btn-warning" (click)="calculate()">End Marking Period</button>
   <br>
   <br>
-  <button class="btn btn-info" (click)="lastPeriod()">Perious Period</button>
+  <button class="btn btn-info" (click)="lastPeriod()">Pervious Period</button>
   <button class="btn btn-info" (click)="nextPeriod()">Next Period</button>
   <button class="btn btn-danger" (click)="deletePeriod()">Delete Period</button>
   <br>
@@ -25,7 +27,6 @@
           </td>
           <td *ngIf="student.period == periodID">{{student._id}}</td>
           <td *ngIf="student.period == periodID">{{topics[(student.quiz[0] - 0)]}} - {{(student.quiz[1] - 0) + 1}}</td>
-          <td *ngIf="student.period == periodID">{{student.quiz}}</td>
           <td *ngIf="student.period == periodID">{{student.password}}</td>
           <td *ngIf="student.period == periodID">
             <div [hidden] = "boolTable[i]">{{student.period}}</div>
@@ -36,6 +37,8 @@
             </div>
           </td>
           <td *ngIf="student.period == periodID && student.queue">{{student.queue[0]}}</td>
+          <td *ngIf="student.period == periodID && student.queue">{{student.average}}</td>
+          <td *ngIf="student.period == periodID && student.queue">{{student.enabled}}</td>
           <a routerLink="/grade/{{student._id}}"><td *ngIf="student.period == periodID"><button class="btn btn-success" >Grades</button></td></a>
           <td *ngIf="student.period == periodID">
             <button class="btn btn-warning" [hidden] = "boolTable[i]" (click)="modify(i)">Edit</button>
@@ -59,7 +62,7 @@
           <option *ngFor="let id of periodList">{{id}}</option>
         </select>
     </div>
-    <button type="submit" class="btn btn-warning">Regiter Student</button>
+    <button type="submit" class="btn btn-warning">Register Student</button>
   </form>
 
   <br>
@@ -69,4 +72,7 @@
   </form>
   <br>
   <a routerLink="/"><button class="btn btn-danger">Logout</button></a>
+  <br>
+  <br>
+  <button class="btn btn-outline-danger" (click)="reset()">Restart Year</button>
 </div>
