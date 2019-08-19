@@ -1,6 +1,6 @@
 <div>
   <h2>Grades: {{student.user}}</h2>
-  <h3>Average: {{student.average | number:'1.0-2'}}</h3>
+  <h3 *ngIf="!periodAvg">Average: {{student.average | number:'1.0-2'}}</h3>
   <h6 *ngIf="admin && !periodAvg">Marking Period Averages: {{student.markingPeriods | number:'1.0-2'}} </h6>
   <h3 *ngIf="admin && !periodAvg">Queue: {{prettyQueue}}</h3>
   <h4 *ngIf="!admin && queueSize != 0">You are {{queueSize}} quizzes behind.</h4>
