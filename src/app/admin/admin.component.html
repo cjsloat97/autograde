@@ -9,6 +9,7 @@
   <br>
   <button class="btn btn-info" (click)="lastPeriod()">Pervious Period</button>
   <button class="btn btn-info" (click)="nextPeriod()">Next Period</button>
+  <a routerLink="/grade/period/{{periodID}}"><button class="btn btn-success">Class Average</button></a>
   <button class="btn btn-danger" (click)="deletePeriod()">Delete Period</button>
   <br>
   <br>
@@ -38,7 +39,12 @@
           </td>
           <td *ngIf="student.period == periodID && student.queue">{{student.queue[0]}}</td>
           <td *ngIf="student.period == periodID && student.queue">{{student.average}}</td>
-          <td *ngIf="student.period == periodID && student.queue">{{student.enabled}}</td>
+          <td *ngIf="student.period == periodID">
+            <div [hidden] = "boolTable[i]">{{student.enabled}}</div>
+            <div [hidden] = "!boolTable[i]">        
+              <input type="checkbox" ng-checked = "student.enabled" [(ngModel)]="enabledChg" />
+            </div>
+          </td>
           <a routerLink="/grade/{{student._id}}"><td *ngIf="student.period == periodID"><button class="btn btn-success" >Grades</button></td></a>
           <td *ngIf="student.period == periodID">
             <button class="btn btn-warning" [hidden] = "boolTable[i]" (click)="modify(i)">Edit</button>

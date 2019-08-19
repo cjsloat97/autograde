@@ -20,6 +20,7 @@ export class AdminComponent implements OnInit {
   periodID : any;
   nameChg : any;
   periodChg : any;
+  enabledChg : Boolean = true;
   day : any;
   
 
@@ -77,15 +78,22 @@ export class AdminComponent implements OnInit {
      window.alert('Student Created!')
   }
 
-  calculate(){
-    window.alert("Yeet")
-  }
-
   reset(){
     if(prompt('You are trying to RESET EVERYTHING. Please note this cannot be undone!\nPlease type "reset everything" for security') === ("reset everything")){
       this.user.reset().subscribe(() => {
         window.alert('Year Reset')
         this.updateList()
+      })
+    }else{
+      window.alert("Invalid Confirmation");
+    }
+  }
+
+  calculate(){
+    if(prompt('You are trying to END MARKING PERIOD.\nMake sure to do this on the FIRST DAY OF THE NEXT MARKING PERIOD!\nPlease type "end marking period" for security') === ("end marking period")){
+      this.user.calculate().subscribe((data) => {
+        window.alert(data.message)
+        this.updateList();
       })
     }else{
       window.alert("Invalid Confirmation");
@@ -122,7 +130,6 @@ export class AdminComponent implements OnInit {
       this.periodList = data.period.answers
       this.students = data.students
       this.day = data.order.day
-      console.log(this.day)
       for (var i = 0; i < this.students.length; i++){
         this.boolTable[i] = false
       }
@@ -186,7 +193,8 @@ export class AdminComponent implements OnInit {
       if(!this.periodChg){
         this.periodChg = this.students[index].period
       }
-      this.user.editUser(this.nameChg,this.periodChg,this.students[index]._id).subscribe(() => this.updateList());
+      console.log(this.enabledChg)
+      this.user.editUser(this.nameChg,this.periodChg,this.enabledChg,this.students[index]._id).subscribe(() => this.updateList());
     }else{
       window.alert("Invalid Confirmation");
     }

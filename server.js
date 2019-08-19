@@ -88,7 +88,7 @@ app.post('/api/database', function (req, res) {
   //pass = Crypto.SHA3(name, { outputLength: 32 }).toString();
   if (thisID === 999) {
     if (name == "blank") {
-      Quizes.findOne({ name: "period" })
+      Quizes.findOne({ name: "period" })//Makes a new period
         .then(function (result) {
           result.answers.push(ID);
           result.save();
@@ -154,6 +154,8 @@ app.post('/api/advance', function (req, res) {
                 index += 1
               }
               students[i].quiz = quizOrder[index]
+              students[i].markingQuizzes.push(students[i].quiz)
+              students[i].markModified('markingQuizzes')
               students[i].save()
             }
           });
@@ -181,6 +183,92 @@ app.delete('/api/database/:id', function (req, res) {
     res.send({
       success: false,
       message: "not admin"
+    });
+  }
+});
+
+//MongoDB period averages
+app.get('/api/database/period/:id', function (req, res) {
+  thisID = req.session.userID
+  if (thisID === 999) {
+    const newStudent = new Student({
+      user: "Period " + req.params.id,
+      period: req.params.id,
+      password: "x"
+    });
+    Student.find()
+      .then((students) => {//This is disgusting but i dont think i care
+        count = 0
+        for (var i = 0; i < students.length; i++) {
+          if (students[i].period == req.params.id && students[i].enabled) {
+            count += 1
+            for (var j = 0; j < students[i].grade.length; j++) {
+              for (var k = 0; k < students[i].grade[j].length; k++) {
+                if (students[i].grade[j][k] != null) {
+                  if (newStudent.grade[j][k] == null) {
+                    newStudent.grade[j][k] = students[i].grade[j][k];
+                  } else {
+                    newStudent.grade[j][k] += students[i].grade[j][k];
+                  }
+                }
+              }
+            }
+          }
+
+        }
+        for (var i = 0; i < newStudent.grade.length; i++) {//Averaging
+          for (var j = 0; j < newStudent.grade[i].length; j++) {
+            if (newStudent.grade[i][j] != null) {
+              newStudent.grade[i][j] /= count;
+            }
+          }
+        }
+        res.send({
+          success: true,
+          student: newStudent,
+          message: "success"
+        });
+      }
+      );
+  } else {
+    res.send({
+      success: false,
+      message: "not admin"
+    });
+  }
+});
+
+//Calculate marking periods
+app.post('/api/marking', function (req, res) {
+  thisID = req.session.userID
+  if (thisID === 999) {
+    Quizes.findOne({ name: "order" })
+      .then(function (result) {
+        Student.find()
+          .then(function (students) {
+            for (var i = 0; i < students.length; i++) {//Empties out the current queue and resets certain arrays
+              students[i].markingPeriods.push(students[i].average)
+              students[i].markingQuizzes = []
+              students[i].markingQuizzes.push(students[i].quiz)
+              for (var j = 0; j < students[i].queue.length; j++) {
+                students[i].grade[students[i].queue[j][0]][students[i].queue[j][1]] = 0
+              }
+              students[i].queue = []
+              students[i].markModified("markingPeriods")
+              students[i].markModified("markingQuizzes")
+              students[i].markModified("grade")
+              students[i].save()
+            }
+            res.send({
+              success: true,
+              message: "Marking Period Ended"
+            });
+          });
+      });
+  } else {
+    res.send({
+      success: false,
+      message: "Not logged in as admin"
     });
   }
 });
@@ -242,6 +330,7 @@ app.post('/api/database/:id', function (req, res) {
       .then(function (student) {
         student.user = req.body.nameChg
         student.period = req.body.periodChg
+        student.enabled = req.body.enabledChg
         student.save()
         res.json({ success: true })
       }
@@ -271,17 +360,11 @@ function correctQueue(student) {
 }
 
 function calculateAverage(student) {
-  var count = 0
   var sum = 0
-  for (var i = 0; i < 15; i++) {
-    for (var j = 0; j < 15; j++) {
-      if (student.correct[i][j] != null) {
-        count += 1
-        sum += student.correct[i][j]
-      }
-    }
+  for (var i = 0; i < student.markingQuizzes.length; i++) {
+    sum += student.correct[student.markingQuizzes[i][0]][student.markingQuizzes[i][1]];
   }
-  return sum / count;
+  return sum / student.markingQuizzes.length;
 }
 
 
@@ -401,7 +484,7 @@ app.get('/api/database', function (req, res) {
   } else {
     res.send({
       success: false,
-      message: "idk you fucked up somewhere"
+      message: "idk1"
     });
   }
 });
@@ -467,7 +550,7 @@ app.post("/api/grader", function (req, res) {
                     success: true,
                     grade: count,
                     corrected: true,
-                    average : student.average
+                    average: student.average
                   })
                 } else if (student.grade[testCat][testNum] == null) { //First attempt
                   student.grade[testCat][testNum] = count
@@ -488,7 +571,7 @@ app.post("/api/grader", function (req, res) {
                     success: true,
                     grade: count,
                     corrected: false,
-                    average : student.average
+                    average: student.average
                   })
                 } else {
                   res.send({
@@ -501,7 +584,7 @@ app.post("/api/grader", function (req, res) {
   } else {
     res.send({
       sucess: false,
-      message: "Idk you fucked up"
+      message: "Idk2"
     })
   }
 });
@@ -523,7 +606,7 @@ app.get('/api/check', function (req, res) {
   } else if (thisID) {
     Student.findById(thisID)
       .then(function (student) {
-        res.send({ success: true, message: "Logged In", quiz: student.quiz, queue: student.queue, grades: student.grade, average : student.average });
+        res.send({ success: true, message: "Logged In", quiz: student.quiz, queue: student.queue, grades: student.grade, average: student.average });
       });
   } else {
     res.send({

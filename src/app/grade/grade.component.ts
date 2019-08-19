@@ -19,9 +19,11 @@ export class GradeComponent implements OnInit {
   editing : any = [false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]
   gradeChg : any = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null] 
   prettyQueue = ""
+  queueSize = 0;
   admin = false;
   reg = false;
   firstDisp = true;
+  periodAvg = false;
 
   topics = ['Fraction Operations','Fraction-Decimal-Percent',
     'Rounding','Add Integers','Subtract Integers','Multiply Integers',
@@ -193,22 +195,32 @@ export class GradeComponent implements OnInit {
 
   updateTable(){
     var id = this.route.snapshot.paramMap.get("id")
-    this.user.getUserData(id).subscribe(data =>{
-      this.student = data;
-      for (var i = 0; i < this.student.queue.length; i++){
-        if (i != this.student.queue.length - 1){
-          this.prettyQueue += "(" + data.queue[i] + ")" + ","
-        }else{
-          this.prettyQueue += "(" + data.queue[i] + ")"
+    if(document.URL.indexOf("period") >= 0){ 
+      this.user.getPeriodData(id).subscribe(data =>{
+        this.student = data.student;
+        this.mastery = this.student.mastery;
+        this.grades = this.student.grade;
+        this.periodAvg = true;
+        this.updateGraph();
+      });
+    }else{
+      this.user.getUserData(id).subscribe(data =>{
+        this.student = data;
+        for (var i = 0; i < this.student.queue.length; i++){
+          if (i != this.student.queue.length - 1){
+            this.prettyQueue += "(" + data.queue[i] + ")" + ","
+          }else{
+            this.prettyQueue += "(" + data.queue[i] + ")"
+          }
         }
-      }
-      if(this.firstDisp)
-        this.grades = this.student.grade
-      else
-        this.grades = this.student.correct
-      this.mastery = this.student.mastery
-      this.updateGraph()
-    })
+        if(this.firstDisp)
+          this.grades = this.student.grade
+        else
+          this.grades = this.student.correct
+        this.mastery = this.student.mastery
+        this.updateGraph()
+      })
+    }
   }
 
   updateGraph(){
@@ -287,6 +299,7 @@ export class GradeComponent implements OnInit {
             else
               this.grades = this.student.correct
             this.mastery = this.student.mastery
+            this.queueSize = this.student.queue.length
             this.updateGraph()
           })
         }else if(data.message == "admin"){

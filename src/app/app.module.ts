@@ -58,6 +58,9 @@ import { ChartsModule } from 'ng2-charts';
       },{
         path : 'grade/:id',
         component : GradeComponent
+      },{
+        path : 'grade/period/:id',
+        component : GradeComponent
       }
     ])
   ],

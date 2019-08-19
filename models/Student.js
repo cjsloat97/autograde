@@ -74,6 +74,10 @@ const StudentSchema = new Schema({
     markingPeriods : {
         type : Array,
         default : []
+    },
+    markingQuizzes : {
+        type : Array,
+        default : [[0,0]]
     }
 });
 

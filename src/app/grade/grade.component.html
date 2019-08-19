@@ -1,11 +1,13 @@
 <div>
   <h2>Grades: {{student.user}}</h2>
-  <h4>Average: {{student.average}}</h4>
-  <h6 *ngIf="admin">Marking Period Averages: {{student.markingPeriods}} </h6>
-  <h3 *ngIf="admin">Queue: {{prettyQueue}}</h3>
+  <h3>Average: {{student.average}}</h3>
+  <h6 *ngIf="admin && !periodAvg">Marking Period Averages: {{student.markingPeriods}} </h6>
+  <h3 *ngIf="admin && !periodAvg">Queue: {{prettyQueue}}</h3>
+  <h4 *ngIf="!admin && queueSize != 0">You are {{queueSize}} quizzes behind.</h4>
+  <h4 *ngIf="!admin && queueSize == 0">You are caught up!</h4>
   <h3 *ngIf="firstDisp"><strong>First Attmept</strong></h3>
   <h3 *ngIf="!firstDisp"><strong>Corrections</strong></h3>
-  <div>
+  <div *ngIf="!periodAvg">
     <button class="btn btn-info" (click)="first()">First Attempt</button>
     <button class="btn btn-info" (click)="correct()">Corrections</button>
     <h6 *ngIf="admin">In order to remove a grade, enter the character "/" into the editor. Grades should only be changed a couple at a time and as a last resort if you think a quiz has incorrect answers. It will not always work as expected due to the nature of the problem. However, it should remove tests from the queue and update mastery in most circumstances.</h6>
@@ -80,7 +82,7 @@
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[14] placeholder={{el[14]}}/></div>
         </td>
         <td>{{mastery[i]}}</td>
-        <td *ngIf="admin">
+        <td *ngIf="admin && !periodAvg">
             <button [hidden] = "editing[i]" class="btn btn-warning" (click)="edit(i)">Edit</button>
             <button [hidden] = "!editing[i]" class="btn btn-warning" (click)="update(i)">Update</button>
         </td>
