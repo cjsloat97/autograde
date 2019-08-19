@@ -84,8 +84,8 @@ app.post('/api/database', function (req, res) {
   thisID = req.session.userID;
   var name = req.body.username;
   var ID = req.body.period;
-  var pass = "secret"; //Add some hash code to 
-  //pass = Crypto.SHA3(name, { outputLength: 32 }).toString();
+  //var pass = "secret"; //Add some hash code to 
+  var pass = Crypto.SHA3(name, { outputLength: 32 }).toString();
   if (thisID === 999) {
     if (name == "blank") {
       Quizes.findOne({ name: "period" })//Makes a new period
@@ -367,6 +367,36 @@ function calculateAverage(student) {
   return sum / student.markingQuizzes.length;
 }
 
+function calculateMastery(student,testCat){
+  masteries = 0;
+  for (var i = 0; i < 15; i++){
+    if (student.grade[testCat][i] == 100){
+      masteries += 1
+      if (masteries == 4){
+        for (i; i < 15; i++){
+          student.grade[testCat][i] = 100;
+          student.correct[testCat][i] = 100;
+        }
+        student.mastery[testCat] = "Yes"
+        student.markModified('grade');
+        student.markModified('correct');
+        message = "You have achieved mastery in this area!"
+        break;
+      }
+    }else if (student.grade[testCat][i] != null){
+      masteries = 0
+    }else{
+      break;
+    }
+  }
+  if (masteries != 4){
+    student.mastery[testCat] = "No"
+    message = "You have " + masteries + " 100's in a row - " + (4 - masteries) + " to go!" 
+  }
+  student.markModified('mastery');
+  return message;
+}
+
 
 //MongoDB student edit grades
 app.post('/api/database/grades/:id', function (req, res) {
@@ -381,6 +411,7 @@ app.post('/api/database/grades/:id', function (req, res) {
           student.correct[req.body.index] = req.body.grades
           student.markModified('correct')
         }
+        calculateMastery(student,req.body.index)
         correctQueue(student)
         student.save()
         res.json({ success: true })
@@ -421,7 +452,7 @@ app.post('/api/login', function (req, res) {
   var username = req.body.username;
   var pass = req.body.password;
   req.session.userID = null;
-  if (username == 'admin' && pass == 'admin') {
+  if (username == 'admin' && pass == 'admin123') {
     req.session.userID = 999 //Temp code for the admin, will need something better
     res.send({
       success: true,
@@ -510,6 +541,7 @@ app.post("/api/grader", function (req, res) {
             var testID = req.body.testID;
             Quizes.findOne({ name: testID })
               .then(function (quiz) {
+                var message = "";
                 const answerKey = quiz.answers;
                 idParse = testID.split(",")
                 testCat = parseInt(idParse[0]); //Which topic
@@ -563,15 +595,15 @@ app.post("/api/grader", function (req, res) {
                     if (student.queue.length != 0) {
                       student.queue.splice(student.queue.indexOf(testID), 1)
                     }
-                    student.mastery[testCat] = "Yes"
-                    student.markModified('mastery');
+                    message = calculateMastery(student,testCat);
                   }
                   student.save();
                   res.send({
                     success: true,
                     grade: count,
                     corrected: false,
-                    average: student.average
+                    average: student.average,
+                    message : message
                   })
                 } else {
                   res.send({

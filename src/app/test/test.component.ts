@@ -50,7 +50,7 @@ export class TestComponent implements OnInit {
           var idParse = this.quiz.split(",")
           var testCat = parseInt(idParse[0]); //Which topic
           var testNum = parseInt(idParse[1]); //Which number
-          if(!data.grades[testCat][testNum] == null){
+          if(data.grades[testCat][testNum] == null){
             this.firstTime = true;
           }else{
             this.firstTime = false;
@@ -92,11 +92,13 @@ export class TestComponent implements OnInit {
           if (this.grade == 100)
             this.next = true
           this.corrected = data.corrected
-          window.alert("Your average has changed from" + this.oldAverage + "->" + data.average)
+          window.alert("Your average has changed from " + this.oldAverage.toFixed(2) + "->" + data.average.toFixed(2))
+          if(data.message){
+            window.alert(data.message);
+          }
         }
+        this.submitted = true;
       })
-      this.submitted = true;
-      this.updateTest();
     }
   }
 }

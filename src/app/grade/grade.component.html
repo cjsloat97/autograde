@@ -1,7 +1,7 @@
 <div>
   <h2>Grades: {{student.user}}</h2>
-  <h3>Average: {{student.average}}</h3>
-  <h6 *ngIf="admin && !periodAvg">Marking Period Averages: {{student.markingPeriods}} </h6>
+  <h3>Average: {{student.average | number:'1.0-2'}}</h3>
+  <h6 *ngIf="admin && !periodAvg">Marking Period Averages: {{student.markingPeriods | number:'1.0-2'}} </h6>
   <h3 *ngIf="admin && !periodAvg">Queue: {{prettyQueue}}</h3>
   <h4 *ngIf="!admin && queueSize != 0">You are {{queueSize}} quizzes behind.</h4>
   <h4 *ngIf="!admin && queueSize == 0">You are caught up!</h4>
@@ -22,63 +22,63 @@
       <tr mdbTableCol *ngFor="let el of grades; let i = index">
         <th scope="row">{{topics[i]}}</th>
         <td>
-          <div [hidden] = "editing[i]">{{el[0]}}</div>
+          <div [hidden] = "editing[i]">{{el[0] | number:'1.0-2'}}</div>
           <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[0] placeholder={{el[0]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[1]}}</div>
+            <div [hidden] = "editing[i]">{{el[1] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[1] placeholder={{el[1]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[2]}}</div>
+            <div [hidden] = "editing[i]">{{el[2] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[2] placeholder={{el[2]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[3]}}</div>
+            <div [hidden] = "editing[i]">{{el[3] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[3] placeholder={{el[3]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[4]}}</div>
+            <div [hidden] = "editing[i]">{{el[4] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[4] placeholder={{el[4]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[5]}}</div>
+            <div [hidden] = "editing[i]">{{el[5] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[5] placeholder={{el[5]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[6]}}</div>
+            <div [hidden] = "editing[i]">{{el[6] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[6] placeholder={{el[6]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[7]}}</div>
+            <div [hidden] = "editing[i]">{{el[7] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[7] placeholder={{el[7]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[8]}}</div>
+            <div [hidden] = "editing[i]">{{el[8] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[8] placeholder={{el[8]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[9]}}</div>
+            <div [hidden] = "editing[i]">{{el[9] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[9] placeholder={{el[9]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[10]}}</div>
+            <div [hidden] = "editing[i]">{{el[10] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[10] placeholder={{el[10]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[11]}}</div>
+            <div [hidden] = "editing[i]">{{el[11] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[11] placeholder={{el[11]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[12]}}</div>
+            <div [hidden] = "editing[i]">{{el[12] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[12] placeholder={{el[12]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[13]}}</div>
+            <div [hidden] = "editing[i]">{{el[13] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[13] placeholder={{el[13]}}/></div>
         </td>
         <td>
-            <div [hidden] = "editing[i]">{{el[14]}}</div>
+            <div [hidden] = "editing[i]">{{el[14] | number:'1.0-2'}}</div>
             <div [hidden] = "!editing[i]"><input type="text" style="width:80%" [(ngModel)] = gradeChg[14] placeholder={{el[14]}}/></div>
         </td>
         <td>{{mastery[i]}}</td>

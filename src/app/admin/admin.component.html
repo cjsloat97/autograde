@@ -38,7 +38,7 @@
             </div>
           </td>
           <td *ngIf="student.period == periodID && student.queue">{{student.queue[0]}}</td>
-          <td *ngIf="student.period == periodID && student.queue">{{student.average}}</td>
+          <td *ngIf="student.period == periodID && student.queue">{{student.average | number:'1.0-2'}}</td>
           <td *ngIf="student.period == periodID">
             <div [hidden] = "boolTable[i]">{{student.enabled}}</div>
             <div [hidden] = "!boolTable[i]">        

@@ -80,10 +80,14 @@ export class AdminComponent implements OnInit {
 
   reset(){
     if(prompt('You are trying to RESET EVERYTHING. Please note this cannot be undone!\nPlease type "reset everything" for security') === ("reset everything")){
-      this.user.reset().subscribe(() => {
-        window.alert('Year Reset')
-        this.updateList()
-      })
+      if(prompt('Are you absolutely sure you want to reset?' + '\nPlease type "yes" for security') === ("yes")){
+        this.user.reset().subscribe(() => {
+          window.alert('Year Reset')
+          this.updateList()
+        })
+      }else{
+        window.alert("Invalid Confirmation");
+      }
     }else{
       window.alert("Invalid Confirmation");
     }
