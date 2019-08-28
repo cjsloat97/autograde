@@ -95,12 +95,23 @@ app.post('/api/database', function (req, res) {
           res.json({ success: true })
         })
     } else {
-      const newStudent = new Student({
-        user: name,
-        period: ID,
-        password: pass
+      Quizes.findOne({ name: "order" })
+        .then(function (result) {
+          var day = result.day
+          const newStudent = new Student({
+            user: name,
+            period: ID,
+            password: pass
+          });
+          for(var i = 0; i < day - 1; i++){
+            newStudent.queue.push(result.order[i])
+            newStudent.markingQuizzes.push(result.order[i])
+            newStudent.correct[result.order[i][0]][result.order[i][1]] = 0
+          }
+          newStudent.quiz = result.order[i]
+          newStudent.markingQuizzes.push(result.order[i])
+          newStudent.save().then(student => res.json(student));
       });
-      newStudent.save().then(student => res.json(student));
     }
   } else {
     res.send({
@@ -247,7 +258,7 @@ app.post('/api/marking', function (req, res) {
         Student.find()
           .then(function (students) {
             for (var i = 0; i < students.length; i++) {//Empties out the current queue and resets certain arrays
-              students[i].markingPeriods.push(students[i].average)
+              students[i].markingPeriods.push(Math.round(students[i].average * 100) / 100)
               students[i].markingQuizzes = []
               students[i].markingQuizzes.push(students[i].quiz)
               for (var j = 0; j < students[i].queue.length; j++) {

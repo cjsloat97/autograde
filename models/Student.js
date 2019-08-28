@@ -77,7 +77,7 @@ const StudentSchema = new Schema({
     },
     markingQuizzes : {
         type : Array,
-        default : [[0,0]]
+        default : []
     }
 });
 
