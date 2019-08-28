@@ -2,17 +2,17 @@
   <h2 *ngIf="firstTime"><strong>First Attmept</strong></h2>
   <img src="../../assets/QQ/{{quiz}}.PNG">
   <br>
-  <form (submit)="onSubmit($event)">
+  <form #ans="ngForm" (submit)="onSubmit($event)" >
     Question 1
-    <input type="text" placeholder="Answer" id="q1">
+    <input type="text" placeholder="Answer" id="q1" #q1>
     Question 2
-    <input type="text" placeholder="Answer" id="q2">
+    <input type="text" placeholder="Answer" id="q2" #q2>
     <br>
     Question 3
-    <input type="text" placeholder="Answer" id="q3">
+    <input type="text" placeholder="Answer" id="q3" #q3>
     Question 4
-    <input type="text" placeholder="Answer" id="q4">
-    <button type="submit" class="btn btn-success">Submit</button>
+    <input type="text" placeholder="Answer" id="q4" #q4>
+    <button type="submit"  class="btn btn-success">Submit</button>
   </form>
 
   <div *ngIf="submitted">
@@ -24,7 +24,7 @@
   </div>
   <br>
   <button *ngIf="next" type="button" (click) = "onNext()" class="btn btn-success">Next</button>
-  <a routerLink="/user"><button type="button" class="btn btn-primary">Back</button></a>
+  <a routerLink="/user"><button type="button" class="btn btn-primary">Main Menu</button></a>
 
 
 </div>

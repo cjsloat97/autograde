@@ -83,6 +83,7 @@ export class AdminComponent implements OnInit {
       if(prompt('Are you absolutely sure you want to reset?' + '\nPlease type "yes" for security') === ("yes")){
         this.user.reset().subscribe(() => {
           window.alert('Year Reset')
+          this.day = 1
           this.updateList()
         })
       }else{

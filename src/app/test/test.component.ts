@@ -69,9 +69,14 @@ export class TestComponent implements OnInit {
       this.corrected = false;
       this.submitted = false;
       this.grade = 0;
-      window.alert("You are behind, the next quiz will be displayed")
+      if(this.queue.length == 1){
+        window.alert("Only 1 quiz left until you are caught up!")
+      }else{
+        window.alert("Only " + this.queue.length + " quizzes left until you are caught up!")
+      }
+
     } else {
-      window.alert("You are all caught up!")
+      window.alert("You are all caught up! Good Job!")
       this.router.navigate(['grade'])
     }
   }
@@ -86,7 +91,7 @@ export class TestComponent implements OnInit {
         if (data.grade == true) {
           this.grade = 100
           this.next = true
-          window.alert("You have already achieved a perfect score on this quiz") 
+          window.alert("You have already achieved a perfect score on this quiz!") 
         } else {
           this.grade = data.grade
           if (this.grade == 100)
@@ -98,6 +103,10 @@ export class TestComponent implements OnInit {
           }
         }
         this.submitted = true;
+        target.querySelector('#q1').value = ''
+        target.querySelector('#q2').value = ''
+        target.querySelector('#q3').value = ''
+        target.querySelector('#q4').value = ''
       })
     }
   }

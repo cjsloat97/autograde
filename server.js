@@ -379,6 +379,10 @@ function calculateAverage(student) {
 }
 
 function calculateMastery(student,testCat){
+  topics = ['Fraction Operations','Fraction-Decimal-Percent',
+  'Rounding','Add Integers','Subtract Integers','Multiply Integers',
+  'Divide Integers','Unit Rate','Equivalent Ratios','Percent','Evalute Expressions'
+  ,'Algebra-Words Translation','Simplify Expressions','1-Step Equations','2-Step  Equations']
   masteries = 0;
   for (var i = 0; i < 15; i++){
     if (student.grade[testCat][i] == 100){
@@ -391,7 +395,7 @@ function calculateMastery(student,testCat){
         student.mastery[testCat] = "Yes"
         student.markModified('grade');
         student.markModified('correct');
-        message = "You have achieved mastery in this area!"
+        message = ("You have achieved mastery in " + topics[testCat] + "!");
         break;
       }
     }else if (student.grade[testCat][i] != null){
@@ -402,7 +406,7 @@ function calculateMastery(student,testCat){
   }
   if (masteries != 4){
     student.mastery[testCat] = "No"
-    message = "You have " + masteries + " 100's in a row - " + (4 - masteries) + " to go!" 
+    message = ("You have " + masteries + " 100's in a row - " + (4 - masteries) + " to go for " + topics[testCat] + "!");
   }
   student.markModified('mastery');
   return message;
