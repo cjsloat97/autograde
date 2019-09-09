@@ -467,7 +467,7 @@ app.post('/api/login', function (req, res) {
   var username = req.body.username;
   var pass = req.body.password;
   req.session.userID = null;
-  if (username == 'admin' && pass == 'admin123') {
+  if (username == 'admin' && pass == 'adminlogin') {
     req.session.userID = 999 //Temp code for the admin, will need something better
     res.send({
       success: true,
