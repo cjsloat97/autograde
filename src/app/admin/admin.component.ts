@@ -198,7 +198,6 @@ export class AdminComponent implements OnInit {
       if(!this.periodChg){
         this.periodChg = this.students[index].period
       }
-      console.log(this.enabledChg)
       this.user.editUser(this.nameChg,this.periodChg,this.enabledChg,this.students[index]._id).subscribe(() => this.updateList());
     }else{
       window.alert("Invalid Confirmation");

@@ -564,20 +564,25 @@ app.post("/api/grader", function (req, res) {
                 var count = 0;
                 for (i = 0; i < answers.length; i++) { //Clean up the answer as best we can 
                   answers[i] = answers[i].trim();
+                  temp = answers[i];
                   if (/\s/.test(answers[i])) {
-                    answers[i] = answers[i].replace(/\s\s+/g, " ");
-                    answers[i] = answers[i].replace(" ", "+")
+                    temp = answers[i].replace(/\s\s+/g, " ");
+                    temp = answers[i].replace(" ", "+")
                   }
                   try {
-                    eval(answers[i]);
+                    eval(temp);
                     eval(answerKey[i]);
                   } catch (error) {
-                    if (answers[i] == answerKey[i]) {
+                    temp = answers[i].replace(/\s\s+/g, " ");
+                    if (temp == answerKey[i]) {
                       count += 1;
                     }
                     continue;
                   }
-                  if (eval(answers[i]) == eval(answerKey[i])) {
+                  if (/\s/.test(answers[i])) {
+                    temp = answers[i].replace(/\s\s+/g, " ");
+                  }
+                  if (eval(temp) == eval(answerKey[i])) {
                     count += 1;
                   }
                 }
